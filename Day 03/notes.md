@@ -1,262 +1,155 @@
-# Day 3
+---
+aliases: [Database Fundamentals - Day 03]
+tags: [database-fundamentals, term1, erd]
+course: "[[Database Fundamentals]]"
+---
 
-Homework:
-- Quiz terminology checklist
-- practice quiz / exercise
-- go through Crows feet notation!
+# Database Fundamentals — Day 3: Entity-Relationship Diagrams
 
-Quiz is an hour long
-done when you're done - no lecture
-- fri sept 18
+## Logistics
+- **Homework:** quiz terminology checklist, practice quiz/exercise, review crow's foot notation
+- **Quiz:** 1 hour, self-paced (no lecture) — Fri Sept 18
+- Today's focus: [[Entity-Relationship Model|ERDs]]
 
-ERD's are todays focus
+## Entity-Relationship Model
+The [[Entity-Relationship Model|ER Model]] is a tool that organizes and documents the logical design of a database.
+> Simplified: manipulate data while maintaining connections.
 
+### Entities vs. Instances
+- **Entity**: Customer
+  - *Instance*: Customer #100 — John Adams
+  - *Instance*: Customer #200 — Miles Smith
+  - *Instance*: Customer #300 — Sarah Jones
+  - *Instance*: Customer #400 — David Chen
+- An [[Entity]] is anything about which the organization needs to store data.
 
-Entity relationship model - The Entity-Relationship (ER) Model is
-a tool that organizes and documents
-the logical design of a database
+### Physical vs. Conceptual Entities
+| Type | Definition | Examples |
+|---|---|---|
+| Physical | Real-world object | Customer, Employee, Vehicle |
+| Conceptual | An idea, event, or business concept | Course, Order, Enrollment |
 
-simplified definition: manipulate data while maintaining connections
+## Attributes
+[[Attribute|Attributes]] are the specific details — a piece of data that describes an entity.
 
-QUIZ ALERT
-entities vs. instances
+### Atomic vs. Composite Attributes
+**Atomic attribute** — cannot be meaningfully broken down; a single, indivisible value.
 
-**Entity**: Customer
-|
-|---**instance**: Customer #100 - John Adams
-|---**instance**: Customer #200 - Miles Smith
-|---**instance**: Customer #300 - Sarah Jones
-|---**instance**: Customer #400 - David Chen
+| Atomic Attribute | Value |
+|---|---|
+| Customer Number | 100 |
+| First Name | Joan |
+| Phone | 780-488-8712 |
 
+**Composite attribute** — can be broken down into smaller, meaningful parts (often atomic attributes).
 
-Physical vs. Conceptual Entities:
-physical:
-- real world object - customer, Employee, Vehicle
-Conceptual:
-- An idea, event or business concept - Course, order, enrollment
+| Composite Attribute | Can Be Broken Down Into |
+|---|---|
+| Address | Street Address, City, Province, Postal Code |
+| Full Name | First Name, Last Name |
 
-Key points
-Entity is anything about which the organization needs to store data
+> **Business rule consideration:** a national company stores address as atomic parts. An international company may store address as a single composite attribute, because formats vary.
 
+### Stored vs. Derived Attributes
+- **Stored** — value is physically stored in the database; directly entered and saved. ("Stored is *set* data.")
+- **Derived** — "learned" or calculated data.
 
-Attributes are the specific Details
+| | Stored | Derived |
+|---|---|---|
+| Storage | Uses more storage space | Saves storage space |
+| Retrieval | Faster retrieval | Calculated each time (slower) |
 
-a piece of data that describe an entity
+## Domains and Null Values
+- **Domain** — the ruleset of which values/characters are allowed for an attribute.
+- **Null** — unknown or N/A.
+- NULL propagates through expressions: any expression using a NULL attribute results in NULL.
+  - Example: `Price + NULL = NULL` (not 0!)
 
+## Keys
 
-Atomic vs composite Attributes
+### Primary Key ([[Primary Key|PK]])
+An attribute (or group of attributes) that uniquely identifies each instance of an entity.
+- Example: Student ID #
+- Cannot be repeated
+- Never null
+- Stable — cannot change over time
 
-Atomic attribute
-- cannot be meaningfully broken down
-- contains a single, indivisible value
+**Special kinds of primary keys:**
+- **Technical / surrogate key** — created by the designer when no naturally occurring unique attribute exists; often an auto-incrementing number.
+- **Composite / concatenated key** — made up of 2+ attributes; the *combination* must be unique.
 
-Atomic Attribute            Value
-Customer Number         100
-First Name                      Joan
-Phone                             780-488-8712
+### Foreign Key ([[Foreign Key|FK]])
+The mechanism that defines a relationship between entities: a primary key of one entity (the parent) that appears as an attribute of another entity (the child).
 
+**Rules:**
+- References a primary key in another table/entity
+- Helps enforce the relationship between parent and child
+- Must use a compatible data type with the referenced primary key
+- Does **not** have to share the same attribute name as the PK it references
+  - Example: `CUSTOMER.CustomerID → ORDER.CustomerID` (names match here, but don't have to)
+- The FK value must correspond to a valid PK value in the parent, when the relationship requires a matching parent
 
-Composite Attribute
-- can be broken down into smaller, meaningful parts
-- the parts are often atomic attributes
+## Relationships & Cardinality
+- **One-to-one (1:1)** — one instance of Entity A relates to one instance of Entity B
+- **One-to-many (1:M)** — one instance of Entity A relates to many instances of Entity B
+- **Many-to-many (M:N)** — many instances of Entity A relate to many instances of Entity B
 
-
-Composite Attribute              Can Be Broken Down Into
-Address                                  Street Address, City, Province, Postal Code
-Full Name                               First Name, Last Name
-
-
-
-Business Rule Consideration:
-A national company stores address as atomic parts. An international company may store
-address as a single composite attribute because formats vary.
-
-
-Stored vs. Derived Attributes
-
-Stored Attributes
-- Value is physically stored in the data base
-- Directly enter and saved
-
-Concise explanation:
-Stored is SET data
-Derived is 'Learned' or 'calculated' data
-
-Store Derived Attribute             Don't Store Derived Attribute
-Uses more storage space          Saves storage space
-Faster retrieval                           Calculated each time (slower)
-
-
-Domains and Null Values
-Domains are the rulesets of which characters are allowed in the dataset
-
-Null = unknown or N/A
-
-
-NULL propagates through expressions. Any
-expression using an attribute that contains
-NULL will result in NULL.
-Example: Price + NULL = NULL (not 0!)
-
-
-PK - Primary Key
-- an attribute or group of attributes that uniquely identifies each instance of an identity
--  example: Student Id #
-- cannot be repeated
-- never null
-- stable - cannot be changed over time
-
-
-
-Special keys of primary keys
-Technical Key (surrogate key)
-- A PK created by the database designer when there is no naturally occurring unique attribute
-- often an auto-incrementing number
-
-Composite Key (concatenated Key)
-- A Pk made up of 2 or more attributes
-- The combination of all attributes must be unique
-
-
-Relationships:
-
-one-to-one (1:1) - One instance of Entity A
-relates to one instance
-of Entity B
-
-One-to-Many (1:M) - One instance of Entity A
-relates to many
-instances of Entity B
-
-Many-to-Many (M:N) - Many instances of
-Entity A relate to many
-instances of Entity B
-
-An Associative Entity is a third entity created to resolve a many-to-many relationship
-
-It contains:
+An **[[Associative Entity]]** is a third entity created to resolve a many-to-many relationship. It contains:
 1. The primary keys of the two related entities (as foreign keys)
 2. Any other attributes that describe the association
-Example: STUDENT — enrolls in — COURSE
+   - Example: STUDENT — *enrolls in* — COURSE
 
+### [[Cardinality]]
+Cardinality = minimum + maximum — the number of instances of one entity that can relate to a single instance of another.
+- **Minimum** — is participation required? `O` = zero (optional), `|` = one (mandatory)
+- **Maximum** — how many are allowed? `|` = one, crow's foot = many
 
-Foreign Keys (FK)
-A Foreign Key (FK) is the mechanism that defines a relationship between entities.
-Definition:
-A primary key of one entity (the parent) that appears as an attribute of another entity (the child).
+**Examples:**
+- Country ↔ Capital City (1:1): `COUNTRY |---| has |---| CAPITAL` — a country has exactly one capital; a capital belongs to exactly one country.
+- Department ↔ Employee (1:M): `DEPARTMENT |---| employs 0<--- EMPLOYEE` — a department employs zero or many employees; an employee belongs to exactly one department.
 
+**How to read cardinality:**
+1. Start at one entity.
+2. Look at the symbols at the *other* end of the relationship.
+3. Read the symbols as the min/max number of related instances — always read in both directions.
 
+Example: `CUSTOMER |---O< ORDER`
+- A CUSTOMER places zero or many ORDERs.
+- An ORDER is placed by one and only one CUSTOMER.
 
-Foreign Key Rules
-A foreign key does more than simply "connect two boxes."
-A foreign key:
-• References a primary key in another table/entity
-• Helps enforce the relationship between parent and child
-• Must use a compatible data type with the referenced primary key
-• Does not have to have the same attribute name as the primary key it references
-Example:
-CUSTOMER.CustomerID → ORDER.CustomerID
-The names match here, but they do not have to.
-Important:
-The FK value must correspond to a valid PK value in the parent when the relationship requires a matching parent.
+## Step-by-Step ERD Construction
+1. **Identify entities** — underline the "nouns" in the business rules
+2. **Identify attributes** — what info do we need to store about each entity?
+3. **Identify primary keys** — natural key or technical key?
+4. **Identify relationships** — the "verbs" between entities; name with verb phrases that read sensibly both directions
+5. **Determine cardinality** — 1:1, 1:M, or M:N
+6. **Create associative entities** for any M:N relationship
+7. **Draw the ERD** using IDEF1X notation
 
+## Quiz Prep — Q&A
+| Question | Answer |
+|---|---|
+| What is an entity? | A person, place, thing, or concept about which we store data |
+| What is an instance? | One specific occurrence of an entity |
+| What is a primary key? | An attribute that uniquely identifies each instance of an entity |
+| What is a foreign key? | A primary key from one entity that appears in another entity |
+| What is an associative entity? | A third entity created to resolve a many-to-many relationship |
+| What is cardinality? | The number of instances of one entity that can relate to another |
+| What is a composite attribute? | An attribute that can be broken down into smaller parts |
+| What is a derived attribute? | An attribute calculated from other stored attributes |
 
-Cardinality = Minimum + Maximum
-Cardinality defines the number of instances of one
-entity that can be related to a single instance of
-another entity.
-A useful way to read cardinality is as a minimum
-and maximum.
-Minimum = Is participation required?
-O = zero → optional
-| = one → mandatory
-Maximum = How many are allowed?
-| = one
-Crow's foot = many
-Common combinations:
-
-
-
-
-Cardinality Examples
-Example 1: Country and Capital City (1:1)
-COUNTRY |---| has |---| CAPITAL
-• Country has exactly one capital.
-• Capital belongs to exactly one country.
-
-
-Example 2: Department and Employee (1:M)
-DEPARTMENT |---| employs 0<--- EMPLOYEE
-• A department employs zero or many employees.
-• An employee belongs to exactly one department.
-
-
-How to Read Cardinality
-When reading an ERD:
-Step 1: Start at one entity.
-Step 2: Look at the symbols at the other end of the relationship.
-Step 3: Read the symbols as the minimum and maximum number of related instances.
-
-
-Example:
-CUSTOMER |---O< ORDER
-Starting with CUSTOMER:
-One customer can have zero or many orders.
-Starting with ORDER:
-One order must belong to exactly one customer.
-Always read the relationship in both directions.
-Read it as a sentence:
-A CUSTOMER places zero or many ORDERs.
-An ORDER is placed by one and only one CUSTOMER.
-Key Point:
-The meaning comes from the symbol at the other entity's end of the relationship.
-
-
-
-Step-by-Step ERD Construction
-Step 1: Identify Entities
-Read the business rules. Underline the "nouns" — these are potential entities.
-Step 2: Identify Attributes
-What information do we need to store about each entity?
-Step 3: Identify Primary Keys
-What uniquely identifies each instance of an entity? Is there a natural key? Do we need a technical key?
-Step 4: Identify Relationships
-How are entities connected? What are the "verbs" between them?
-Name relationships with verb phrases and make sure they make sense in both directions.
-Step 5: Determine Cardinality
-How many instances can participate in each relationship? (1:1, 1:M, M:N)
-Step 6: Create Associative Entities
-If you have a M:N relationship, create an associative entity to resolve it.
-Step 7: Draw the ERD
-Use IDEF1X notation with proper symbols
-
-
-
-
-Question Answer
-What is an entity? A person, place, thing, or concept about which we store data.
-What is an instance? One specific occurrence of an entity.
-What is a primary key? An attribute that uniquely identifies each instance of an entity.
-What is a foreign key? A primary key from one entity that appears in another entity.
-What is an associative entity? A third entity created to resolve a many-to-many relationship.
-What is cardinality? The number of instances of one entity that can relate to another.
-What is a composite attribute? An attribute that can be broken down into smaller parts.
-What is a derived attribute? An attribute calculated from other stored attributes
-
-
-
-Concept Key Point
-ER Model A blueprint for database design
-Entities The "things" we store information about
-Attributes The characteristics of entities
-PKs and FKs Unique identifiers and relationship links
-1:1 Relationships Rare — one to one
-1:M Relationships Most common — one to many
-M:N Relationships Must be resolved with an associative entity
-Cardinality Defines how many instances can participate
-Participation Defines whether participation is required or
-optional
-IDEF1X Notation The notation used in this course
-Identifying Relationship FK is part of the child's PK
-Non-Identifying Relationship FK is not part of the child's PK
-
+## Key Concepts Summary
+| Concept | Key Point |
+|---|---|
+| [[Entity-Relationship Model\|ER Model]] | Blueprint for database design |
+| [[Entity]] | The "things" we store information about |
+| [[Attribute]] | The characteristics of entities |
+| [[Primary Key]] / [[Foreign Key]] | Unique identifiers and relationship links |
+| 1:1 Relationships | Rare — one to one |
+| 1:M Relationships | Most common — one to many |
+| M:N Relationships | Must be resolved with an [[Associative Entity]] |
+| [[Cardinality]] | Defines how many instances can participate |
+| Participation | Defines whether participation is required or optional |
+| IDEF1X Notation | The notation used in this course |
+| Identifying Relationship | FK is part of the child's PK |
+| Non-Identifying Relationship | FK is not part of the child's PK |
