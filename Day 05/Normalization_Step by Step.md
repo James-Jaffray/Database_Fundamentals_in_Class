@@ -1,6 +1,5 @@
 # Normalization Cheat Sheet - 0NF → 3NF + ERD
 
-Study guide for the Student/Course normalization activity. Built from the Joe's Video Store walkthrough your class already worked through - same method, applied to a new scenario. No answers for Student/Course are given here; this is the *how*, not the *what*.
 
 ---
 
