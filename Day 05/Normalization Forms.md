@@ -6,6 +6,8 @@ course: "[[Database Fundamentals]]"
 
 # Database Fundamentals — Day 5: Normalization Forms
 
+**Today's focus:** learn the normal forms and walk a table from 0NF through 3NF.
+
 ## Logistics
 - 2 homework assignments today
 
@@ -14,6 +16,7 @@ A set of rules for designing relational databases.
 - **Redundant data** — data stored in multiple places unnecessarily
 
 **Normal forms:**
+
 | Form | Removes |
 |---|---|
 | 1NF — First Normal Form | Repeating groups |
@@ -43,9 +46,18 @@ The process of deliberately introducing a rule violation *after* completing a no
      5. Designate a primary key for the new table
      - If a composite attribute exists, replace it with two or more atomic attributes
 3. **Apply 2NF:** all non-key attributes must fully depend on the *entire* primary key
-4. **Apply 3NF:** (not detailed in class yet)
+4. **Apply 3NF:** (not detailed in class notes — see [[Database Fundamentals - Day 05 Normalization Cheat Sheet]])
 
 ### Quick Reference
 - [ ] **1NF** — atomic attributes only, no repeating groups
 - [ ] **2NF** — all non-key attributes fully depend on the entire PK
 - [ ] **3NF** — a non-key attribute can't depend on another non-key attribute
+
+## To Know
+- 1NF: atomic, no repeating groups. 2NF: full dependency on the whole PK. 3NF: no transitive dependencies
+
+## Homework
+- Two homework assignments (see the Day 05 folder)
+
+## Reflection
+*What was the most surprising insight today?*

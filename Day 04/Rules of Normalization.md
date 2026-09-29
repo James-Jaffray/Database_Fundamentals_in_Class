@@ -6,6 +6,8 @@ course: "[[Database Fundamentals]]"
 
 # Database Fundamentals — Day 4: Rules of Normalization
 
+**Today's focus:** see why normalization exists — reduce redundancy and avoid update, insert, and delete anomalies.
+
 ## [[Normalization]] Basics
 Rules created by **Edgar F. Codd** — a step-by-step guide for designing a database.
 
@@ -20,3 +22,9 @@ Rules created by **Edgar F. Codd** — a step-by-step guide for designing a data
 ## Key Takeaways
 - One data table is not necessarily better than two.
 - Normalization reduces data redundancy — it doesn't eliminate it. Some repeated info may still exist after normalizing.
+
+## To Know
+- Normalization reduces redundancy; it doesn't eliminate it
+
+## Reflection
+*What was the most surprising insight today?*

@@ -1,13 +1,21 @@
+---
+aliases: [Database Fundamentals - Day 05 Normalization Cheat Sheet]
+tags: [database-fundamentals, term1, cheat-sheet]
+course: "[[Database Fundamentals]]"
+---
+
 # Normalization Cheat Sheet - 0NF → 3NF + ERD
+
+Method sheet for [[Normalization]]. Class notes: [[Database Fundamentals - Day 05]]. Worked example continues in [[Database Fundamentals - Day 06]].
 
 
 ---
 
 ## 1. The core vocabulary (know these cold)
 
-- **Primary Key (PK)** - the attribute (or combination of attributes) that uniquely identifies a row in a table.
+- **[[Primary Key]] (PK)** - the attribute (or combination of attributes) that uniquely identifies a row in a table.
 - **Composite key**  a PK made of two or more attributes together (neither one alone is unique).
-- **Foreign Key (FK)** - a copy of another table's PK, used to link the two tables.
+- **[[Foreign Key]] (FK)** - a copy of another table's PK, used to link the two tables.
 - **Repeating group** - a set of attributes that can occur multiple times for a single entity (e.g., one student can have many courses). Written in parentheses in 0NF notation.
 - **Atomic attribute** - a value that can't be meaningfully split further (1NF requires every attribute to be atomic).
 - **Partial dependency** - a non-key attribute depends on only *part* of a composite PK, not the whole thing. (This is what 2NF removes.)

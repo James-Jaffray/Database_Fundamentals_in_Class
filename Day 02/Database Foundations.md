@@ -6,6 +6,8 @@ course: "[[Database Fundamentals]]"
 
 # Database Fundamentals — Day 2: Database Foundations
 
+**Today's focus:** understand what databases and DBMSs are, the four language categories, and how to start designing a database.
+
 ## Logistics
 - Homework: practice quiz — do it
 
@@ -74,6 +76,7 @@ An [[Entity-Relationship Model|ERD]] is a visual representation of the entities.
 ![[Pasted image 20260904141341.png]]
 
 ## Glossary
+
 | Term | Definition |
 |---|---|
 | Database | Organized collection of data |
@@ -84,3 +87,9 @@ An [[Entity-Relationship Model|ERD]] is a visual representation of the entities.
 | Entity | Thing we store information about |
 | Attribute | Characteristic of an entity |
 | Relationship | Connection between entities |
+
+## To Know
+- Quiz alert: know Database vs DBMS and the DDL / DML / DCL / Query categories
+
+## Reflection
+*What was the most surprising insight today?*

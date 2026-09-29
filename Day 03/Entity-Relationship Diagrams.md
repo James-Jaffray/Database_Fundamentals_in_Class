@@ -24,6 +24,7 @@ The [[Entity-Relationship Model|ER Model]] is a tool that organizes and document
 - An [[Entity]] is anything about which the organization needs to store data.
 
 ### Physical vs. Conceptual Entities
+
 | Type | Definition | Examples |
 |---|---|---|
 | Physical | Real-world object | Customer, Employee, Vehicle |
@@ -127,6 +128,7 @@ Example: `CUSTOMER |---O< ORDER`
 7. **Draw the ERD** using IDEF1X notation
 
 ## Quiz Prep — Q&A
+
 | Question | Answer |
 |---|---|
 | What is an entity? | A person, place, thing, or concept about which we store data |
@@ -139,6 +141,7 @@ Example: `CUSTOMER |---O< ORDER`
 | What is a derived attribute? | An attribute calculated from other stored attributes |
 
 ## Key Concepts Summary
+
 | Concept | Key Point |
 |---|---|
 | [[Entity-Relationship Model\|ER Model]] | Blueprint for database design |
@@ -153,3 +156,6 @@ Example: `CUSTOMER |---O< ORDER`
 | IDEF1X Notation | The notation used in this course |
 | Identifying Relationship | FK is part of the child's PK |
 | Non-Identifying Relationship | FK is not part of the child's PK |
+
+## Reflection
+*What was the most surprising insight today?*
