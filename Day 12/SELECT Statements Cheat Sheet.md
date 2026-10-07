@@ -6,8 +6,6 @@ course: "[[Database Fundamentals]]"
 
 # SELECT Statements Cheat Sheet
 
-Quick reference for [[Basic SELECT Statements]]. Functions: [[postgresql_functions_reference]].
-
 ## Clause Order (mandatory)
 ```sql
 SELECT [ALL | DISTINCT] column_list
@@ -78,6 +76,17 @@ HAVING AVG(Mark) > 80                        -- filters groups after
 ORDER BY "Average Mark" DESC;
 ```
 
+### Counting per group with HAVING
+*"Show each EmployeeTypeID and how many employees it has, only for types with more than 2 employees."*
+```sql
+SELECT EmployeeTypeID, COUNT(*) "Number of Employees"   -- "for each" type
+FROM Employee
+GROUP BY EmployeeTypeID                                 -- one row per type
+HAVING COUNT(*) > 2;                                    -- keep groups with 3+
+```
+- `COUNT(*)` counts the records in each group, so `HAVING` works the same as with `AVG` — just a different aggregate
+- "Only show ... with more than N" is a condition on the count → `HAVING`, not `WHERE`
+
 ## Common Errors
 
 | Error | Fix |
@@ -86,3 +95,6 @@ ORDER BY "Average Mark" DESC;
 | Aggregate in `WHERE` | Move it to `HAVING` |
 | `HAVING` before `GROUP BY` | Reorder: `GROUP BY` first |
 | `LIKE '%x'` uses `=` | Switch to `LIKE` |
+
+---
+Full notes: [[Basic SELECT Statements]] · Functions: [[postgresql_functions_reference]]
