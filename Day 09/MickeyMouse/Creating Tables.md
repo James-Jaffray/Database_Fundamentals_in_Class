@@ -25,6 +25,8 @@ Create Table MickeyMouseStudent -- creates the table with below attributes
 Select * From MickeyMouseStudent; -- To show table in data output
 ```
 
+Reference sheets: [[Database Fundamentals - Day 09 Reference Sheet]] · [[Database Fundamentals - SQL Definitions Reference]]
+
 ## Breakdown
 
 | Statement | What it does |
@@ -53,7 +55,7 @@ Build tables in dependency order — independent ones first (OfficeType, Referra
 Foreign-key columns like `OfficeTypeCode` are plain columns today; they become [[Foreign Key|foreign keys]] next class.
 
 ## To Know
-- No primary keys, foreign keys, or other constraints yet — only columns, datatypes, `NULL` / `NOT NULL`, and indexes
+- No primary keys, foreign keys, or other constraints yet — only columns, datatypes, `NULL` / `NOT NULL`, and [[SQL Indexes|indexes]]; keys and other [[SQL Constraints|constraints]] come next
 
 ## Homework
 - Funky Flowers: create six tables (Vehicles, Products, Customers, Deliveries, Orders, OrderDetails) with sensible datatypes and null rules, then create an index on `Customers(LastName)` and `Orders(OrderDate)` and drop one of them

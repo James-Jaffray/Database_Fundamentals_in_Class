@@ -11,8 +11,11 @@ course: "[[Database Fundamentals]]"
 - **Quiz:** 1 hour, self-paced (no lecture) — Fri Sept 18
 - Today's focus: [[Entity-Relationship Model|ERDs]]
 
+## Why Plan First? (Poor Design Problems)
+Redundancy, inconsistency, update/insert/delete anomalies — see [[Data Anomalies]]. The fix: plan with the ER model *before* building.
+
 ## Entity-Relationship Model
-The [[Entity-Relationship Model|ER Model]] is a tool that organizes and documents the logical design of a database.
+It's a blueprint for the database, helps communicate with stakeholders, and documents the design. The [[Entity-Relationship Model|ER Model]] is a tool that organizes and documents the logical design of a database.
 > Simplified: manipulate data while maintaining connections.
 
 ### Entities vs. Instances
@@ -53,7 +56,7 @@ The [[Entity-Relationship Model|ER Model]] is a tool that organizes and document
 
 ### Stored vs. Derived Attributes
 - **Stored** — value is physically stored in the database; directly entered and saved. ("Stored is *set* data.")
-- **Derived** — "learned" or calculated data.
+- **Derived** — "learned" or calculated data (Order Amount = Quantity × Price; Age = today − DOB).
 
 | | Stored | Derived |
 |---|---|---|
@@ -62,7 +65,9 @@ The [[Entity-Relationship Model|ER Model]] is a tool that organizes and document
 
 ## Domains and Null Values
 - **Domain** — the ruleset of which values/characters are allowed for an attribute.
-- **Null** — unknown or N/A.
+- **Data type** — the kind of data (integer, string, date); the domain narrows it further (e.g. integer *and* > 0 → 1, 100 OK; -5, 0, "ABC" not OK)
+- **Null** — the *absence* of a value; not zero, blank or empty string. See [[NULL Values]].
+  - Means either **unknown** (new customer, postal code not given yet) or **doesn't apply** (single employee, no spouse)
 - NULL propagates through expressions: any expression using a NULL attribute results in NULL.
   - Example: `Price + NULL = NULL` (not 0!)
 
@@ -79,6 +84,8 @@ An attribute (or group of attributes) that uniquely identifies each instance of 
 - **Technical / surrogate key** — created by the designer when no naturally occurring unique attribute exists; often an auto-incrementing number.
 - **Composite / concatenated key** — made up of 2+ attributes; the *combination* must be unique.
 
+**Exercise:** ENROLLMENT(Student ID, Course Code, Grade) → PK is **Student ID + Course Code** (composite).
+
 ### Foreign Key ([[Foreign Key|FK]])
 The mechanism that defines a relationship between entities: a primary key of one entity (the parent) that appears as an attribute of another entity (the child).
 
@@ -89,8 +96,22 @@ The mechanism that defines a relationship between entities: a primary key of one
 - Does **not** have to share the same attribute name as the PK it references
   - Example: `CUSTOMER.CustomerID → ORDER.CustomerID` (names match here, but don't have to)
 - The FK value must correspond to a valid PK value in the parent, when the relationship requires a matching parent
+- An attribute can be **both PK and FK** — common in an associative entity (ENROLLMENT: Student ID + Course Code are each PK + FK; Grade and Enrollment Date are non-key)
+
+**Parent vs. child:** parent = the "one" side (CUSTOMER), child = the "many" side (ORDER).
+**Rule of thumb:** the parent does *not* contain the FK; the child does.
+
+| Relationship | Where the FK goes |
+|---|---|
+| 1:1 | Where the business rules make most sense; avoid unnecessary NULLs. If the FK enforces 1:1 it should be **UNIQUE** |
+| 1:M | In the "many" entity (child) |
+| M:N | Create an [[Associative Entity]] holding both PKs |
+
+**1:1 example (department manager):** put `ManagerID (FK)` in DEPARTMENT (every department has a manager → no NULLs), not `ManagesDept` in EMPLOYEE (most employees aren't managers → lots of NULLs).
 
 ## Relationships & Cardinality
+A relationship is a business association between two entities. All relationships are **bi-directional** (read from either side). Relationships are named with **verb phrases** ("places", "contains", "enrolls in") that make sense both ways.
+
 - **One-to-one (1:1)** — one instance of Entity A relates to one instance of Entity B
 - **One-to-many (1:M)** — one instance of Entity A relates to many instances of Entity B
 - **Many-to-many (M:N)** — many instances of Entity A relate to many instances of Entity B
@@ -100,10 +121,27 @@ An **[[Associative Entity]]** is a third entity created to resolve a many-to-man
 2. Any other attributes that describe the association
    - Example: STUDENT — *enrolls in* — COURSE
 
+### [[Participation]]
+Is the relationship required? **Mandatory** (every ORDER must belong to a CUSTOMER) vs. **Optional** (a CUSTOMER may have no ORDERs yet).
+- Participation = *whether* the relationship is required; cardinality = *how many* are possible. They work together.
+
 ### [[Cardinality]]
 Cardinality = minimum + maximum — the number of instances of one entity that can relate to a single instance of another.
 - **Minimum** — is participation required? `O` = zero (optional), `|` = one (mandatory)
 - **Maximum** — how many are allowed? `|` = one, crow's foot = many
+
+**Crow's foot symbols:** circle = zero, bar = one, crow's foot = many.
+
+| Symbol | Meaning |
+|---|---|
+| `O\|` | zero or one |
+| `\|\|` | one and only one |
+| `O<` | zero or many |
+| `\|<` | one or many |
+
+Crow's foot is used here only to make cardinality easier to understand — **IDEF1X is the notation used in this course**.
+
+**Business rules determine cardinality** (Business Rule → Relationship → Cardinality → ERD). Don't pick a symbol because it "looks right"; derive it from the [[Business Rules]]. E.g. "a student can enroll in many courses; a course has many students" → M:N → needs an associative entity.
 
 **Examples:**
 - Country ↔ Capital City (1:1): `COUNTRY |---| has |---| CAPITAL` — a country has exactly one capital; a capital belongs to exactly one country.
@@ -118,6 +156,23 @@ Example: `CUSTOMER |---O< ORDER`
 - A CUSTOMER places zero or many ORDERs.
 - An ORDER is placed by one and only one CUSTOMER.
 
+**Cardinality types:** to one (driver's license) · to zero or one (parking stall) · to one or many (timecards) · to zero, one or many (projects) · to many (course → students).
+
+## IDEF1X Notation
+See [[IDEF1X Notation]].
+- **Base entity** — square corners, has its own PK
+- **Associative entity** — rounded corners, resolves M:N
+- Foreign key attributes are suffixed **(FK)**
+- **Solid line = identifying** relationship; **dashed line = non-identifying**
+
+### Identifying vs. Non-Identifying
+Key question: *is the FK part of the child's primary key?* See [[Identifying Relationships]].
+
+| Type | Line | FK in child is… | Example |
+|---|---|---|---|
+| Non-identifying | Dashed | NOT part of child's PK | CUSTOMER → ORDER (Order has its own Order ID) |
+| Identifying | Solid | part of child's PK | ORDER → ORDER_DETAILS (PK = Order ID + Item Number) |
+
 ## Step-by-Step ERD Construction
 1. **Identify entities** — underline the "nouns" in the business rules
 2. **Identify attributes** — what info do we need to store about each entity?
@@ -126,6 +181,16 @@ Example: `CUSTOMER |---O< ORDER`
 5. **Determine cardinality** — 1:1, 1:M, or M:N
 6. **Create associative entities** for any M:N relationship
 7. **Draw the ERD** using IDEF1X notation
+
+### Worked Example — College Registration
+Rules: departments offer many courses; a course is offered by exactly one department; students enroll in many courses; courses have many students.
+- Entities: DEPARTMENT, COURSE, STUDENT, ENROLLMENT
+- DEPARTMENT offers COURSE → 1:M (Dept ID is an FK in COURSE)
+- STUDENT enrolls in COURSE → M:N → resolved by ENROLLMENT (Student ID FK + Course Code FK, plus Grade, Enrollment Date)
+
+## How to Read an ERD
+1. Identify entities → 2. attributes → 3. PKs → 4. FKs → 5. relationships → 6. cardinality & participation → 7. identifying vs. non-identifying → 8. read each relationship as a sentence in both directions.
+Goal: explain the design in plain language.
 
 ## Quiz Prep — Q&A
 
@@ -152,9 +217,9 @@ Example: `CUSTOMER |---O< ORDER`
 | 1:M Relationships | Most common — one to many |
 | M:N Relationships | Must be resolved with an [[Associative Entity]] |
 | [[Cardinality]] | Defines how many instances can participate |
-| Participation | Defines whether participation is required or optional |
-| IDEF1X Notation | The notation used in this course |
-| Identifying Relationship | FK is part of the child's PK |
+| [[Participation]] | Defines whether participation is required or optional |
+| [[IDEF1X Notation]] | The notation used in this course |
+| [[Identifying Relationships\|Identifying Relationship]] | FK is part of the child's PK |
 | Non-Identifying Relationship | FK is not part of the child's PK |
 
 ## Reflection
