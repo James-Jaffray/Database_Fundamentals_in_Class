@@ -1,7 +1,8 @@
 ---
 aliases: [Database Fundamentals - Day 12 SELECT Cheat Sheet]
-tags: [database-fundamentals, term1, sql, select, cheat-sheet]
+tags: [database-fundamentals, term1, cheat-sheet, sql, select]
 course: "[[Database Fundamentals]]"
+day: 12
 ---
 
 # SELECT Statements Cheat Sheet
@@ -87,6 +88,15 @@ HAVING COUNT(*) > 2;                                    -- keep groups with 3+
 - `COUNT(*)` counts the records in each group, so `HAVING` works the same as with `AVG` — just a different aggregate
 - "Only show ... with more than N" is a condition on the count → `HAVING`, not `WHERE`
 
+## Pattern to Reuse: "Show X and how many, only where the count is more than N"
+```sql
+SELECT thing, COUNT(*) AS "Total"
+FROM table
+GROUP BY thing
+HAVING COUNT(*) > N;
+```
+`GROUP BY` buckets the rows by `thing`, `COUNT(*)` counts each bucket, and `HAVING` drops the buckets that don't pass the count test. Use `HAVING` here, not `WHERE`, because the count only exists after grouping.
+
 ## Common Errors
 
 | Error | Fix |
@@ -97,4 +107,4 @@ HAVING COUNT(*) > 2;                                    -- keep groups with 3+
 | `LIKE '%x'` uses `=` | Switch to `LIKE` |
 
 ---
-Full notes: [[Basic SELECT Statements]] · Functions: [[postgresql_functions_reference]]
+Full notes: [[Basic SELECT Statements]] · Functions: [[PostgreSQL Functions Reference|postgresql_functions_reference]]

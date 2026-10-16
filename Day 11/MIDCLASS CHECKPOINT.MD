@@ -1,3 +1,9 @@
+---
+tags: [database-fundamentals, term1, practice, sql, savepoint]
+course: "[[Database Fundamentals]]"
+day: 11
+---
+
 DROP TABLE IF EXISTS INVOICEITEM;
 DROP TABLE IF EXISTS INVOICE;
 DROP TABLE IF EXISTS OFFICEADDON;

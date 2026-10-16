@@ -1,7 +1,8 @@
 ---
 aliases: [Database Fundamentals - Day 01]
-tags: [database-fundamentals, term1]
+tags: [database-fundamentals, term1, lecture-notes, intro]
 course: "[[Database Fundamentals]]"
+day: 1
 ---
 
 # Database Fundamentals — Day 1: Course Introduction

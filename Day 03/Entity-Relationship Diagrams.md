@@ -1,7 +1,8 @@
 ---
 aliases: [Database Fundamentals - Day 03]
-tags: [database-fundamentals, term1, erd]
+tags: [database-fundamentals, term1, lecture-notes, erd, keys, cardinality]
 course: "[[Database Fundamentals]]"
+day: 3
 ---
 
 # Database Fundamentals — Day 3: Entity-Relationship Diagrams

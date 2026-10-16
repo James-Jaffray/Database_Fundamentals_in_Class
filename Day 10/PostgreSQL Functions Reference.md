@@ -1,3 +1,9 @@
+---
+tags: [database-fundamentals, term1, cheat-sheet, sql, postgresql, functions]
+course: "[[Database Fundamentals]]"
+day: 10
+---
+
 # PostgreSQL Functions Reference Sheet
 
 The functions you'll use most, grouped by purpose. Examples use the desk-rental schema (`DESKHOLDER`, `OFFICE`, `LEASE`, `INVOICE`, etc.).

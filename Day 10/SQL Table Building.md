@@ -1,3 +1,9 @@
+---
+tags: [database-fundamentals, term1, lecture-notes, sql, create-table]
+course: "[[Database Fundamentals]]"
+day: 10
+---
+
 # SQL Table Building: The Short Version
 
 The script follows one pattern: **drop children first, create parents first, then index the foreign keys.** Everything else is column definitions and constraints.

@@ -1,10 +1,10 @@
 ---
-aliases: [Database Fundamentals - Day 19]
-tags: [database-fundamentals, term1]
+tags: [database-fundamentals, term1, placeholder]
 course: "[[Database Fundamentals]]"
+day: 18
 ---
 
-# Database Fundamentals — Day 19: 
+# Database Fundamentals — Day 18: 
 
 **Today's focus:** 
 

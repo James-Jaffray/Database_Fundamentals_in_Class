@@ -1,12 +1,13 @@
 ---
 aliases: [Database Fundamentals - Day 09 Reference Sheet]
-tags: [database-fundamentals, term1, sql, cheat-sheet]
+tags: [database-fundamentals, term1, cheat-sheet, sql, create-table]
 course: "[[Database Fundamentals]]"
+day: 9
 ---
 
 # Day 9 Reference Sheet — CREATE TABLE Basics
 
-Quick reference for [[SQL CREATE TABLE]]. Class notes: [[Database Fundamentals - Day 09 SQL Practice]]. Full definitions (incl. keys and constraints): [[Database Fundamentals - SQL Definitions Reference]].
+Quick reference for [[SQL CREATE TABLE]]. Class notes: [[First SQL Script]]. Full definitions (incl. keys and constraints): [[SQL Definitions Reference]].
 
 ## Checklist
 - [ ] pgAdmin connected and working

@@ -1,7 +1,8 @@
 ---
 aliases: [Database Fundamentals - Day 08]
-tags: [database-fundamentals, term1, erd]
+tags: [database-fundamentals, term1, practice, erd, merging]
 course: "[[Database Fundamentals]]"
+day: 8
 ---
 
 # Database Fundamentals — Day 8: Memories Forever (Merging Views into an ERD)
@@ -14,7 +15,7 @@ Memories Forever preserves memories on DVD and VHS (reunions, weddings, seminars
 ## Phase I — Database Design
 From the supplied views (including the **Project Invoice** view: project, client, rented items and labor, staff, subtotal/GST/total), build a 3NF design and **merge the 3 views into one 3NF ERD**.
 
-Process reminder ([[Database Fundamentals - Day 05 Normalization Cheat Sheet]]):
+Process reminder ([[Normalization Cheat Sheet]]):
 1. Build the 0NF table for each view and find the repeating group
 2. Normalize each view to 3NF
 3. [[Merging Tables|Merge]] tables that share a PK, preserving every entity, attribute, and relationship

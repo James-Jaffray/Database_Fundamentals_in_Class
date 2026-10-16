@@ -1,12 +1,12 @@
 ---
-aliases: [Database Fundamentals - SQL Definitions Reference]
-tags: [database-fundamentals, term1, sql, cheat-sheet]
+tags: [database-fundamentals, term1, cheat-sheet, sql, constraints]
 course: "[[Database Fundamentals]]"
+day: 9
 ---
 
 # SQL Definitions Reference — CREATE TABLE (Lessons 9–11)
 
-Every Create Table concept for the unit in one place. Tags: **Day 9** · **L10** = Primary/Foreign Keys · **L11** = Default/Check/Unique/Alter Table. Basics sheet: [[Database Fundamentals - Day 09 Reference Sheet]].
+Every Create Table concept for the unit in one place. Tags: **Day 9** · **L10** = Primary/Foreign Keys · **L11** = Default/Check/Unique/Alter Table. Basics sheet: [[CREATE TABLE Reference Sheet]].
 
 **Rule of thumb for the whole unit:** every constraint gets a name (`PK_`, `NN_`, `FK_`, `CK_`, `DF_`, `UQ_`), and every foreign key column gets an index (`IX_`) — except when it's already covered by the leading column of a composite PK.
 

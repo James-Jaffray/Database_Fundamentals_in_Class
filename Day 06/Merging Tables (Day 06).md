@@ -1,7 +1,8 @@
 ---
 aliases: [Database Fundamentals - Day 06]
-tags: [database-fundamentals, term1]
+tags: [database-fundamentals, term1, lecture-notes, normalization, merging]
 course: "[[Database Fundamentals]]"
+day: 6
 ---
 
 # Database Fundamentals — Day 6: Merging
@@ -16,7 +17,7 @@ course: "[[Database Fundamentals]]"
 | 2NF | All non-key attributes fully depend on the entire PK | Partial dependency | Move to new table, copy PK part as FK |
 | 3NF | No non-key attribute depends on another non-key attribute | Transitive dependency | Move to new table, copy non-key attribute as PK/FK |
 
-See [[Normalization]] for the full picture, and [[Database Fundamentals - Day 05 Normalization Cheat Sheet]] for the step-by-step method.
+See [[Normalization]] for the full picture, and [[Normalization Cheat Sheet]] for the step-by-step method.
 
 ## The Normalization Process (Whole Design)
 1. Collect **views** (subsets of data) from source documents and [[Business Rules]]

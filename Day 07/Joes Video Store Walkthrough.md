@@ -1,7 +1,8 @@
 ---
 aliases: [Database Fundamentals - Day 07]
-tags: [database-fundamentals, term1, normalization]
+tags: [database-fundamentals, term1, lecture-notes, normalization, walkthrough]
 course: "[[Database Fundamentals]]"
+day: 7
 ---
 
 # Database Fundamentals — Day 7: Joe's Video Store Walkthrough
@@ -9,7 +10,7 @@ course: "[[Database Fundamentals]]"
 **Today's focus:** apply the 0NF → 3NF method to a full scenario, view by view, before merging the views into one ERD.
 
 ## Roadmap
-View 1 (Customer Rents Video) → normalize to 3NF → View 2 (Video Information) → normalize to 3NF → [[Merging Tables|merge]] → final ERD. Method: [[Database Fundamentals - Day 05 Normalization Cheat Sheet]].
+View 1 (Customer Rents Video) → normalize to 3NF → View 2 (Video Information) → normalize to 3NF → [[Merging Tables|merge]] → final ERD. Method: [[Normalization Cheat Sheet]].
 
 ## View 1 — Customer Rents Video
 Read the business rules first, then find what repeats. Here the **videos on a transaction** repeat, so that's the repeating group.

@@ -1,7 +1,7 @@
 ---
-aliases: [Database Fundamentals - Day 21]
-tags: [database-fundamentals, term1]
+tags: [database-fundamentals, term1, placeholder]
 course: "[[Database Fundamentals]]"
+day: 21
 ---
 
 # Database Fundamentals — Day 21: 

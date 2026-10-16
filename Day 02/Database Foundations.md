@@ -1,7 +1,8 @@
 ---
 aliases: [Database Fundamentals - Day 02]
-tags: [database-fundamentals, term1]
+tags: [database-fundamentals, term1, lecture-notes, database-basics, ddl-dml]
 course: "[[Database Fundamentals]]"
+day: 2
 ---
 
 # Database Fundamentals — Day 2: Database Foundations
@@ -97,7 +98,7 @@ An [[Entity-Relationship Model|ERD]] is a visual representation of the entities.
 
 ![[Pasted image 20260904141224.png]]
 
-[[Normalization]] — guidelines for the logical design of a relational database: how many tables, which attributes go where. Main goal: reduce unnecessary redundancy and prevent inconsistencies and anomalies (update / insert / delete). Covered properly from [[Database Fundamentals - Day 04]].
+[[Normalization]] — guidelines for the logical design of a relational database: how many tables, which attributes go where. Main goal: reduce unnecessary redundancy and prevent inconsistencies and anomalies (update / insert / delete). Covered properly from [[Rules of Normalization|Day 04]].
 ![[Pasted image 20260904141341.png]]
 
 ## Glossary

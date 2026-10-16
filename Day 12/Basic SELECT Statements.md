@@ -1,14 +1,15 @@
 ---
 aliases: [Database Fundamentals - Day 12]
-tags: [database-fundamentals, term1, sql, select]
+tags: [database-fundamentals, term1, lecture-notes, sql, select]
 course: "[[Database Fundamentals]]"
+day: 12
 ---
 
 # Database Fundamentals — Day 12: Basic SELECT Statements
 
 **Today's focus:** writing queries with `SELECT` — filtering rows, sorting, aggregates, built-in functions, and `GROUP BY` / `HAVING`.
 
-Function lookup: [[postgresql_functions_reference]]. Table building: [[SQL CREATE TABLE]].
+Function lookup: [[PostgreSQL Functions Reference|postgresql_functions_reference]]. Table building: [[SQL CREATE TABLE]].
 
 ## What Are Queries?
 Queries retrieve data from the database. They're flexible in which **columns**, which **rows**, and which **aggregate calculations** they return. Writing accurate queries is a critical skill.

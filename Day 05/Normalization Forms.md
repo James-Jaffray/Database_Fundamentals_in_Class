@@ -1,7 +1,8 @@
 ---
 aliases: [Database Fundamentals - Day 05]
-tags: [database-fundamentals, term1]
+tags: [database-fundamentals, term1, lecture-notes, normalization]
 course: "[[Database Fundamentals]]"
+day: 5
 ---
 
 # Database Fundamentals — Day 5: Normalization Forms
@@ -78,7 +79,7 @@ Rules: an employee works for one department; a department has many employees; a 
   - `Project(Project Number, Project Name, Sponsoring Department Name)`
   - Relationships: Department 1:M Employee · Employee 1:M WorksOn · Project 1:M WorksOn
 
-See [[Database Fundamentals - Day 05 Normalization Cheat Sheet]] for the method sheet.
+See [[Normalization Cheat Sheet]] for the method sheet.
 
 ### Summary of Normal Forms
 

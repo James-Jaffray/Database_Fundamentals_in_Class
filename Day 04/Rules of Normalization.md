@@ -1,7 +1,8 @@
 ---
 aliases: [Database Fundamentals - Day 04]
-tags: [database-fundamentals, term1]
+tags: [database-fundamentals, term1, lecture-notes, normalization, anomalies]
 course: "[[Database Fundamentals]]"
+day: 4
 ---
 
 # Database Fundamentals — Day 4: Rules of Normalization

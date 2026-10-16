@@ -1,14 +1,15 @@
 ---
 aliases: [Database Fundamentals - Day 09 SQL Practice]
-tags: [database-fundamentals, term1, sql]
+tags: [database-fundamentals, term1, practice, sql, create-table]
 course: "[[Database Fundamentals]]"
+day: 9
 ---
 
 # Database Fundamentals — Day 9: First SQL Script (MickeyMouseStudent)
 
 **Today's focus:** create tables in SQL — datatypes, `NULL` vs `NOT NULL`, `DROP TABLE`, and indexes.
 
-Practice script for creating a table. Ties back to the DDL commands from [[Database Fundamentals - Day 02]] and the [[Attribute|attributes]] you'd normally get from an ERD.
+Practice script for creating a table. Ties back to the DDL commands from [[Database Foundations|Day 02]] and the [[Attribute|attributes]] you'd normally get from an ERD.
 
 ```sql
 Drop Table IF Exists MickeyMouseStudent; -- deletes the table
@@ -25,7 +26,7 @@ Create Table MickeyMouseStudent -- creates the table with below attributes
 Select * From MickeyMouseStudent; -- To show table in data output
 ```
 
-Reference sheets: [[Database Fundamentals - Day 09 Reference Sheet]] · [[Database Fundamentals - SQL Definitions Reference]]
+Reference sheets: [[CREATE TABLE Reference Sheet]] · [[SQL Definitions Reference]]
 
 ## Breakdown
 
