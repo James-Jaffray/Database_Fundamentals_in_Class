@@ -10,7 +10,7 @@ day: 7
 **Today's focus:** apply the 0NF → 3NF method to a full scenario, view by view, before merging the views into one ERD.
 
 ## Roadmap
-View 1 (Customer Rents Video) → normalize to 3NF → View 2 (Video Information) → normalize to 3NF → [[Merging Tables|merge]] → final ERD. Method: [[Normalization Cheat Sheet]].
+View 1 (Customer Rents Video) → normalize to 3NF → View 2 (Video Information) → normalize to 3NF → [[Merging Tables|merge]] → final ERD. Method: [[Normalization Reference Sheet]].
 
 ## View 1 — Customer Rents Video
 Read the business rules first, then find what repeats. Here the **videos on a transaction** repeat, so that's the repeating group.

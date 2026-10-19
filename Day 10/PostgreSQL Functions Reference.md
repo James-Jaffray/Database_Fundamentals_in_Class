@@ -1,5 +1,5 @@
 ---
-tags: [database-fundamentals, term1, cheat-sheet, sql, postgresql, functions]
+tags: [database-fundamentals, term1, reference-sheet, sql, postgresql, functions]
 course: "[[Database Fundamentals]]"
 day: 10
 ---

@@ -1,6 +1,6 @@
 ---
 aliases: [Database Fundamentals - Day 09 Reference Sheet]
-tags: [database-fundamentals, term1, cheat-sheet, sql, create-table]
+tags: [database-fundamentals, term1, reference-sheet, sql, create-table]
 course: "[[Database Fundamentals]]"
 day: 9
 ---

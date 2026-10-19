@@ -79,7 +79,7 @@ Rules: an employee works for one department; a department has many employees; a 
   - `Project(Project Number, Project Name, Sponsoring Department Name)`
   - Relationships: Department 1:M Employee · Employee 1:M WorksOn · Project 1:M WorksOn
 
-See [[Normalization Cheat Sheet]] for the method sheet.
+See [[Normalization Reference Sheet]] for the method sheet.
 
 ### Summary of Normal Forms
 

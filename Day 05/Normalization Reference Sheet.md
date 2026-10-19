@@ -1,11 +1,11 @@
 ---
-aliases: [Database Fundamentals - Day 05 Normalization Cheat Sheet]
-tags: [database-fundamentals, term1, cheat-sheet, normalization, erd]
+aliases: [Database Fundamentals - Day 05 Normalization Reference Sheet]
+tags: [database-fundamentals, term1, reference-sheet, normalization, erd]
 course: "[[Database Fundamentals]]"
 day: 5
 ---
 
-# Normalization Cheat Sheet - 0NF → 3NF + ERD
+# Normalization Reference Sheet - 0NF → 3NF + ERD
 
 Method sheet for [[Normalization]]. Class notes: [[Normalization Forms|Day 05]]. Worked example continues in [[Merging Tables (Day 06)|Day 06]].
 
@@ -148,7 +148,7 @@ If you get stuck on any single step, re-read that step's section in Joe's Video 
 
 ---
 
-## 6. Quick reference - notation cheat sheet
+## 6. Quick reference - notation reference sheet
 
 ```
 TableName(PK, attr1, attr2)              → simple table, single-attribute PK

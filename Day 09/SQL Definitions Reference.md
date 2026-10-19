@@ -1,5 +1,5 @@
 ---
-tags: [database-fundamentals, term1, cheat-sheet, sql, constraints]
+tags: [database-fundamentals, term1, reference-sheet, sql, constraints]
 course: "[[Database Fundamentals]]"
 day: 9
 ---
@@ -113,7 +113,7 @@ Alter Table Orders
 ```
 Use when the table already exists and you don't want to lose its data by dropping and recreating. Two common uses: add a new column, add a constraint to an existing column.
 
-## Constraint Naming Cheat
+## Constraint Naming Tips
 
 | Prefix | Constraint | Pattern |
 |---|---|---|

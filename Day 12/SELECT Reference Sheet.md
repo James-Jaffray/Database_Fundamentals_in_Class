@@ -1,11 +1,11 @@
 ---
-aliases: [Database Fundamentals - Day 12 SELECT Cheat Sheet]
-tags: [database-fundamentals, term1, cheat-sheet, sql, select]
+aliases: [Database Fundamentals - Day 12 SELECT Reference Sheet]
+tags: [database-fundamentals, term1, reference-sheet, sql, select]
 course: "[[Database Fundamentals]]"
 day: 12
 ---
 
-# SELECT Statements Cheat Sheet
+# SELECT Statements Reference Sheet
 
 ## Clause Order (mandatory)
 ```sql
