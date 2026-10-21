@@ -1,0 +1,203 @@
+-- use The Monthly Desk tables
+DROP VIEW IF EXISTS VW_OFFICETYPERENTSUMMARY;
+
+DROP VIEW IF EXISTS VW_REFERRALDESKHOLDERCOUNT;
+
+DROP VIEW IF EXISTS VW_LEASETYPETOTALS;
+
+DROP VIEW IF EXISTS VW_INVOICETOTALS;
+
+DROP VIEW IF EXISTS VW_OFFICESQUAREFOOTAGE;
+
+DROP VIEW IF EXISTS VW_LEASEYEARSUMMARY;
+
+DROP VIEW IF EXISTS VW_ADDONSALESSUMMARY;
+
+DROP VIEW IF EXISTS VW_PAIDINVOICESUMMARY;
+
+DROP VIEW IF EXISTS VW_DESKHOLDERLEASETOTALS;
+
+DROP VIEW IF EXISTS VW_OFFICEWINDOWSUMMARY;
+
+-- 1. Create a view named VW_OfficeTypeRentSummary that displays the OfficeTypeDescription and the average MonthlyRent for each office type. Write a Select statement to display all records from the view.
+DROP VIEW IF EXISTS VW_OFFICETYPERENTSUMMARY;
+
+CREATE VIEW VW_OFFICETYPERENTSUMMARY AS
+SELECT
+	OT.OFFICETYPEDESCRIPTION,
+	AVG(O.MONTHLYRENT) AS "AVERAGE MONTHLY RENT"
+FROM
+	OFFICETYPE OT
+	INNER JOIN OFFICE O ON OT.OFFICETYPECODE = O.OFFICETYPECODE
+GROUP BY
+	OT.OFFICETYPEDESCRIPTION;
+
+SELECT
+	OFFICETYPEDESCRIPTION,
+	"AVERAGE MONTHLY RENT"
+FROM
+	VW_OFFICETYPERENTSUMMARY;
+
+-- 2. Create a view named VW_ReferralDeskHolderCount that displays the ReferralSourceDescription and the total number of desk holders for each referral source. Write a Select statement to display referral sources with more than 5 desk holders.
+CREATE VIEW VW_REFERRALDESKHOLDERCOUNT AS
+SELECT
+	RS.REFERRALSOURCEPEDESCRIPTION,
+	COUNT(DH.DESKHOLDERID) AS "TOTAL DESK HOLDERS"
+FROM
+	REFERRALSOURCE RS
+	INNER JOIN DESKHOLDER DH ON RS.REFERRALSOURCECODE = DH.REFERRALSOURCECODE
+GROUP BY
+	RS.REFERRALSOURCEPEDESCRIPTION;
+
+SELECT
+	REFERRALSOURCEDESCRIPTION,
+	"TOTAL DESK HOLDERS"
+FROM
+	VW_REFERRALDESKHOLDERCOUNT
+WHERE
+	"TOTAL DESK HOLDERS" > 5;
+
+-- 3. Create a view named VW_LeaseTypeTotals that displays the LeaseTypeDescription and the average TotalLeasePrice for each lease type. Write a Select statement to sort the results from highest average lease price to lowest.
+CREATE VIEW VW_LEASETYPETOTALS AS
+SELECT
+	LT.LEASETYPEDESCRIPTION,
+	AVG(L.TOTALLEASEPRICE) AS "AVERAGE LEASE PRICE"
+FROM
+	LEASETYPE LT
+	INNER JOIN LEASE L ON LT.LEASETYPENUMBER = L.LEASETYPENUMBER
+GROUP BY
+	LT.LEASETYPEDESCRIPTION;
+
+SELECT
+	LEASETYPEDESCRIPTION,
+	"AVERAGE LEASE PRICE"
+FROM
+	VW_LEASETYPETOTALS
+ORDER BY
+	"AVERAGE LEASE PRICE" DESC;
+
+-- 4. Create a view named VW_InvoiceTotals that displays the InvoiceNumber and the total InvoiceAddOnPrice for each invoice using the InvoiceItem table. Write a Select statement to display invoices where the total exceeds 500.
+CREATE VIEW VW_INVOICETOTALS AS
+SELECT
+	INVOICENUMBER,
+	SUM(INVOICEADDONPRICE) AS "TOTAL ADD-ON PRICE"
+FROM
+	INVOICEITEM
+GROUP BY
+	INVOICENUMBER;
+
+SELECT
+	INVOICENUMBER,
+	"TOTAL ADD-ON PRICE"
+FROM
+	VW_INVOICETOTALS
+WHERE
+	"TOTAL ADD-ON PRICE" > 500;
+
+-- 5. Create a view named VW_OfficeSquareFootage that displays the OfficeTypeDescription and the average SquareFootage for each office type. Write a Select statement to display office types with an average square footage greater than 300.
+CREATE VIEW VW_OFFICESQUAREFOOTAGE AS
+SELECT
+	OT.OFFICETYPEDESCRIPTION,
+	AVG(O.SQUAREFOOTAGE) AS "AVERAGE SQUARE FOOTAGE"
+FROM
+	OFFICETYPE OT
+	INNER JOIN OFFICE O ON OT.OFFICETYPECODE = O.OFFICETYPECODE
+GROUP BY
+	OFFICETYPEDESCRIPTION;
+
+SELECT
+	OFFICETYPEDESCRIPTION,
+	"AVERAGE SQUARE FOOTAGE"
+FROM
+	VW_OFFICESQUAREFOOTAGE
+WHERE
+	"AVERAGE SQUARE FOOTAGE" > 300;
+
+-- 6. Create a view named VW_LeaseYearSummary that displays the lease year and the number of leases started in each year. Write a Select statement to display all records sorted by lease year.
+CREATE VIEW VW_LEASEYEARSUMMARY AS
+SELECT
+	TO_CHAR(STARTDATE, 'YYYY') AS "LEASE YEAR",
+	COUNT(LEASENUMBER) AS "NUMBER OF LEASES"
+FROM
+	LEASE L
+GROUP BY
+	TO_CHAR(STARTDATE, 'YYYY');
+
+SELECT
+	"LEASE YEAR",
+	"NUMBER OF LEASES"
+FROM
+	VW_LEASEYEARSUMMARY
+ORDER BY
+	"LEASE YEAR";
+
+-- 7. Create a view named VW_AddOnSalesSummary that displays the AddOnDescription and the total QuantitySold for each add-on. Write a Select statement to display add-ons where more than 10 units have been sold.
+CREATE VIEW VW_ADDONSALESSUMMARY AS
+SELECT
+	OAO.ADDONDESCRIPTION,
+	SUM(II.QUANTITYSOLD) AS "TOTAL QUANTITY SOLD"
+FROM
+	OFFICEADDON OAO
+	INNER JOIN INVOICEITEM II ON OAO.ADDONNUMBER = II.ADDONNUMBER
+GROUP BY
+	OAO.ADDONDESCRIPTION;
+
+SELECT
+	ADDONDESCRIPTION,
+	"TOTAL QUANTITY SOLD"
+FROM
+	VW_ADDONSALESSUMMARY
+WHERE
+	"TOTAL QUANTITY SOLD" > 10;
+
+-- 8. Create a view named VW_PaidInvoiceSummary that displays the PaidYN value and the average InvoiceTotal for each payment status. Write a Select statement to display all records from the view.
+CREATE VIEW VW_PAIDINVOICESUMMARY AS
+SELECT
+	PAIDYN,
+	AVG(INVOICETOTAL) AS "AVERAGE INVOICE TOTAL"
+FROM
+	INVOICE
+GROUP BY
+	PAIDYN;
+
+SELECT
+	PAIDYN,
+	"AVERAGE INVOICE TOTAL"
+FROM
+	VW_PAIDINVOICESUMMARY;
+
+-- 9. Create a view named VW_DeskHolderLeaseTotals that displays each DeskHolderID and the total TotalLeasePrice for all leases associated with that desk holder.
+-- Write a Select statement to display desk holders whose total lease price exceeds 2000.
+CREATE VIEW VW_DESKHOLDERLEASETOTALS AS
+SELECT
+	DESKHOLDERID,
+	SUM(TOTALLEASEPRICE) AS "TOTAL LEASE PRICE"
+FROM
+	LEASE
+GROUP BY
+	DESKHOLDERID;
+
+SELECT
+	DESKHOLDERID,
+	"TOTAL LEASE PRICE"
+FROM
+	VW_DESKHOLDERLEASETOTALS
+WHERE
+	"TOTAL LEASE PRICE" > 2000;
+
+-- 10. Create a view named VW_OfficeWindowSummary that displays the WindowStatus and the total number of offices for each window status.
+-- Write a Select statement to display all records from the view.
+CREATE VIEW VW_OFFICEWINDOWSUMMARY AS
+SELECT
+	WINDOWSTATUS,
+	COUNT(OFFICENUMBER) AS "TOTAL OFFICES"
+FROM
+	OFFICE
+GROUP BY
+	WINDOWSTATUS;
+
+SELECT
+	WINDOWSTATUS,
+	"TOTAL OFFICES"
+FROM
+	VW_OFFICEWINDOWSUMMARY;
