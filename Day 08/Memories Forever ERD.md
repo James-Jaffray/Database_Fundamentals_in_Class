@@ -24,7 +24,5 @@ Process reminder ([[Normalization Reference Sheet]]):
 ## To Know
 - Read relationships in both directions when setting cardinality (see the ERD Relationships image in the Day 08 folder)
 
-## Homework
-
 ## Reflection
 *What was the most surprising insight today?*

@@ -38,7 +38,5 @@ Business rules: movie types (Horror, Comedy, Action, Romance, Science fiction), 
 ## To Know
 - Same table name + same PK → merge the attributes (both views have a Video table keyed on `VideoID`)
 
-## Homework
-
 ## Reflection
 *What was the most surprising insight today?*

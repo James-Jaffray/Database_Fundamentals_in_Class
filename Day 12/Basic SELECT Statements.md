@@ -252,9 +252,6 @@ HAVING AVG(Mark) > 80;
 - `HAVING` is for aggregate conditions only
 - No `GROUP BY` in the query → use `WHERE`
 
-## Homework
-- 
-
 ## To Know
 - Clause order is mandatory: `SELECT → FROM → JOIN → WHERE → GROUP BY → HAVING → ORDER BY`
 - Always name calculated and aggregate columns (`AS "Name"` or just `"Name"`)

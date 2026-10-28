@@ -1,0 +1,1017 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>SQL Open-Book Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky nav, one reading column. Built to be searched mid-quiz: pattern finder first, labs for the tricky ideas, quiz last. */
+:root {
+  --bg: #F3F5F9;
+  --surface: #FFFFFF;
+  --ink: #121826;
+  --muted: #566074;
+  --line: #D6DCE7;
+  --accent: #1F5FBF;
+  --accent-ink: #FFFFFF;
+  --mark: #FFD25E;
+  --mark-ink: #3A2B00;
+  --code-bg: #E8ECF3;
+  --good: #1B7F3B;
+  --bad: #B3261E;
+  --kw: #1F5FBF;
+  --str: #9A4B00;
+  --com: #6B7587;
+  --num: #7A3FB0;
+  --font-display: "Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D121B; --surface: #151C28; --ink: #E6EAF2; --muted: #95A0B4; --line: #27313F;
+    --accent: #6FA8FF; --accent-ink: #08162C; --mark: #E5B93C; --mark-ink: #2A2000;
+    --code-bg: #1B2433; --good: #5FD07F; --bad: #FF8A80;
+    --kw: #7DB2FF; --str: #F0B070; --com: #7C889D; --num: #C8A0F0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D121B; --surface: #151C28; --ink: #E6EAF2; --muted: #95A0B4; --line: #27313F;
+  --accent: #6FA8FF; --accent-ink: #08162C; --mark: #E5B93C; --mark-ink: #2A2000;
+  --code-bg: #1B2433; --good: #5FD07F; --bad: #FF8A80;
+  --kw: #7DB2FF; --str: #F0B070; --com: #7C889D; --num: #C8A0F0; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body {
+  background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 4rem;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+.wrap { max-width: 820px; margin-inline: auto; }
+a { color: var(--accent); }
+code, pre, kbd { font-family: var(--font-mono); font-size: 0.875em; }
+:not(pre) > code { background: var(--code-bg); padding: 0.1em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line);
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+.topbar-inner { max-width: 820px; margin-inline: auto; display: flex; align-items: center; gap: 1rem; min-width: 0; }
+.brand { font: 700 1rem var(--font-display); white-space: nowrap; padding-block: 0.7rem; }
+.nav { display: flex; gap: 0.25rem; overflow-x: auto; min-width: 0; scrollbar-width: thin; }
+.nav a { white-space: nowrap; text-decoration: none; color: var(--muted); font-size: 0.85rem; padding: 0.7rem 0.55rem; border-bottom: 2px solid transparent; }
+.nav a:hover { color: var(--ink); border-bottom-color: var(--accent); }
+
+.intro { padding-block: 2.5rem 0.5rem; }
+.intro h1 { font: 700 clamp(2rem, 6vw, 3rem)/1.05 var(--font-display); margin: 0 0 0.75rem; text-wrap: balance; letter-spacing: -0.01em; }
+.intro p { max-width: 62ch; margin: 0 0 0.75rem; }
+.lede { font-size: 1.1rem; }
+.order { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 1.25rem 0 0; padding: 0; list-style: none; max-width: none; }
+.order li { font: 500 0.82rem var(--font-mono); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 0.3rem 0.6rem; }
+.order li.opt { color: var(--muted); }
+.order-note { font-size: 0.85rem; color: var(--muted); margin-top: 0.5rem; }
+
+section.topic { padding-block: 2.5rem 0.5rem; border-top: 1px solid var(--line); margin-top: 2rem; }
+.eyebrow { font: 500 0.75rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin: 0 0 0.35rem; }
+h2 { font: 700 clamp(1.5rem, 4vw, 2rem)/1.15 var(--font-display); margin: 0 0 1rem; text-wrap: balance; }
+h3 { font: 600 1.1rem/1.3 var(--font-display); margin: 1.75rem 0 0.5rem; }
+p, ul, ol { max-width: 66ch; }
+.topic ul, .topic ol { padding-left: 1.25rem; }
+.topic li { margin-block: 0.25rem; }
+
+pre { position: relative; background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: 0.9rem 1rem; margin: 0.75rem 0; overflow-x: auto; line-height: 1.55; max-width: 100%; tab-size: 2; }
+pre code { font-size: 0.84rem; }
+.kw { color: var(--kw); font-weight: 500; } .str { color: var(--str); } .com { color: var(--com); font-style: italic; } .num { color: var(--num); }
+.copy { position: absolute; top: 0.4rem; right: 0.4rem; font: 500 0.7rem var(--font-mono); background: var(--surface); color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0.15rem 0.5rem; cursor: pointer; }
+.copy:hover { color: var(--ink); }
+
+.note { border-left: 3px solid var(--mark); background: var(--surface); padding: 0.7rem 1rem; margin: 1rem 0; max-width: 66ch; border-radius: 0 6px 6px 0; }
+.note b:first-child { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.note p { margin: 0.35rem 0 0; }
+
+.btn, .chip, .tab { font: 500 0.875rem var(--font-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; padding: 0.4rem 0.8rem; cursor: pointer; }
+.btn:hover, .chip:hover, .tab:hover { border-color: var(--accent); }
+.btn.primary, .tab[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+input[type="search"], input[type="text"] { font: 400 0.95rem var(--font-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 0.55rem 0.8rem; min-width: 0; width: 100%; }
+label.check { display: inline-flex; gap: 0.5rem; align-items: flex-start; cursor: pointer; }
+
+/* pattern finder */
+.finder { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 2.75rem); z-index: 5; background: var(--bg); padding-block: 0.5rem; }
+.pat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin: 0.75rem 0; overflow: hidden; }
+.pat > summary { list-style: none; cursor: pointer; padding: 0.75rem 1rem; display: grid; gap: 0.15rem; }
+.pat > summary::-webkit-details-marker { display: none; }
+.pat > summary .t { font: 600 1.02rem var(--font-display); }
+.pat > summary .w { color: var(--muted); font-size: 0.88rem; }
+.pat[open] > summary { border-bottom: 1px solid var(--line); background: var(--code-bg); }
+.pat-body { padding: 0.25rem 1rem 0.9rem; }
+.pat-body ul { margin: 0.4rem 0 0; }
+.pat-count { color: var(--muted); font-size: 0.85rem; margin: 0.25rem 0 0; }
+.empty { color: var(--muted); padding: 1rem 0; }
+
+/* labs */
+.lab { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin: 1.25rem 0; overflow: hidden; }
+.lab-head { display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; padding: 0.5rem 1rem; background: var(--code-bg); border-bottom: 1px solid var(--line); font: 500 0.75rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.lab-body { padding: 1rem; display: grid; gap: 0.9rem; min-width: 0; }
+.row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.tables { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; }
+.tbl { min-width: 0; }
+.tbl .cap { font: 500 0.75rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.25rem; }
+.tbl .scroll { overflow-x: auto; }
+table.d { border-collapse: collapse; width: 100%; font-size: 0.85rem; font-family: var(--font-mono); }
+table.d th, table.d td { border: 1px solid var(--line); padding: 0.3rem 0.55rem; text-align: left; white-space: nowrap; }
+table.d th { background: var(--code-bg); font-weight: 500; }
+table.d td.null { color: var(--muted); font-style: italic; }
+table.d tr.hl td { background: color-mix(in srgb, var(--mark) 35%, var(--surface)); }
+.big { font: 700 1.1rem var(--font-display); }
+.out { font: 400 0.85rem/1.6 var(--font-mono); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 0.6rem 0.8rem; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.step { border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem 0.9rem; background: var(--bg); }
+.step .n { font: 500 0.72rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); }
+.step pre { margin: 0.35rem 0 0; }
+
+.table-scroll { overflow-x: auto; max-width: 100%; margin: 1rem 0; }
+table.ref { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.9rem; }
+table.ref th, table.ref td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.ref th { font: 500 0.75rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+
+.schema { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+.sc { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.7rem 0.9rem; min-width: 0; }
+.sc h4 { margin: 0 0 0.4rem; font: 600 1rem var(--font-display); display: flex; justify-content: space-between; gap: 0.5rem; }
+.sc h4 span { font: 500 0.75rem var(--font-mono); color: var(--muted); }
+.sc ul { list-style: none; margin: 0; padding: 0; font: 400 0.8rem/1.7 var(--font-mono); }
+.sc li { margin: 0; overflow-wrap: anywhere; }
+.pk { color: var(--accent); font-weight: 500; } .fk { color: var(--str); } .nullable { color: var(--muted); }
+.tag { font-size: 0.68rem; border: 1px solid currentColor; border-radius: 3px; padding: 0 0.25rem; margin-left: 0.3rem; }
+
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin: 1rem 0; }
+.q p { margin: 0 0 0.6rem; font-weight: 500; }
+.q pre { margin: 0 0 0.75rem; }
+.q-opts { display: grid; gap: 0.4rem; }
+.q-opts button { text-align: left; font: 400 0.9rem/1.45 var(--font-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 0.5rem 0.75rem; cursor: pointer; }
+.q-opts button:hover:not(:disabled) { border-color: var(--accent); }
+.q-opts button.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 14%, var(--bg)); }
+.q-opts button.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--bg)); }
+.q-opts button:disabled { cursor: default; color: var(--ink); }
+.q .why { margin: 0.6rem 0 0; font-weight: 400; color: var(--muted); font-size: 0.9rem; }
+.score { font: 600 1.1rem var(--font-display); }
+.checklist { list-style: none; padding: 0; display: grid; gap: 0.4rem; }
+.checklist li { margin: 0; }
+.checklist input:checked + span { color: var(--muted); text-decoration: line-through; }
+</style>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <span class="brand">SQL Open-Book Guide</span>
+    <nav class="nav" aria-label="Sections">
+      <a href="#quiz2">Quiz 2 focus</a>
+      <a href="#find">Find the pattern</a>
+      <a href="#joins">Joins</a>
+      <a href="#subq">Subqueries</a>
+      <a href="#union">UNION</a>
+      <a href="#views">Views</a>
+      <a href="#ref">Reference</a>
+      <a href="#schema">Tables</a>
+      <a href="#errors">Errors</a>
+      <a href="#quiz">Quiz</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="intro">
+    <p class="eyebrow">Database Fundamentals · Days 12 to 16 · PostgreSQL</p>
+    <h1>SQL for the open-book quiz</h1>
+    <p class="lede">Built from your notes, in-class scripts, the Day 15 and 16 handouts and your instructor's Quiz 2 study sheet. Quiz 2 covers joins, WHERE vs HAVING, GROUP BY, clause order and spotting errors, so that section comes first. Subqueries, UNION and views are further down for later.</p>
+    <ul class="order" aria-label="Mandatory clause order">
+      <li>SELECT</li><li>FROM</li><li class="opt">JOIN … ON</li><li class="opt">WHERE</li><li class="opt">GROUP BY</li><li class="opt">HAVING</li><li class="opt">ORDER BY</li><li class="opt">LIMIT</li>
+    </ul>
+    <p class="order-note">The clauses you use must stay in this order. With UNION, <code>ORDER BY</code> goes after the last query only.</p>
+  </div>
+
+  <!-- ============ QUIZ 2 FOCUS ============ -->
+  <section class="topic" id="quiz2">
+    <p class="eyebrow">Instructor's Quiz 2 study sheet</p>
+    <h2>Quiz 2 focus</h2>
+    <p>The sheet lists three things on the quiz: <strong>which join to use</strong> in a scenario, <strong>clause selection</strong> (WHERE vs HAVING, GROUP BY, ORDER BY), and <strong>spotting the error</strong> in a query and its fix. Everything below is that sheet, plus drills.</p>
+
+    <h3>1. The four join types</h3>
+    <div class="table-scroll"><table class="ref">
+      <thead><tr><th>Join</th><th>What it returns</th></tr></thead>
+      <tbody>
+        <tr><td><code>INNER JOIN</code></td><td>Only matching rows</td></tr>
+        <tr><td><code>LEFT OUTER JOIN</code></td><td>All rows from the left table, plus matches from the right</td></tr>
+        <tr><td><code>RIGHT OUTER JOIN</code></td><td>All rows from the right table, plus matches from the left</td></tr>
+        <tr><td><code>FULL OUTER JOIN</code></td><td>All rows from both tables</td></tr>
+      </tbody>
+    </table></div>
+    <p>Which table do you want <em>every</em> row from? That decides left vs right. "Left" is the table written before the join keyword, "right" is the one after.</p>
+    <ul>
+      <li>All parents, even ones with no children: an outer join on the parent side.</li>
+      <li>Only records that match in both tables: <code>INNER JOIN</code>.</li>
+      <li>Parent listed first, all parents wanted: <code>LEFT OUTER JOIN</code>.</li>
+      <li>Child listed first, all parents wanted: <code>RIGHT OUTER JOIN</code>.</li>
+    </ul>
+    <p>You can play with the join types in the <a href="#joins">join lab</a> further down.</p>
+
+    <h3>Drill: which join?</h3>
+    <p class="score" id="scen-score" aria-live="polite"></p>
+    <div id="scen-root"></div>
+
+    <h3>2. WHERE vs HAVING</h3>
+    <div class="table-scroll"><table class="ref">
+      <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+      <tbody>
+        <tr><td>Which one filters individual rows?</td><td><code>WHERE</code></td></tr>
+        <tr><td>Which one filters aggregate results, like Count?</td><td><code>HAVING</code></td></tr>
+        <tr><td>Which one runs before grouping?</td><td><code>WHERE</code></td></tr>
+        <tr><td>Which one runs after grouping?</td><td><code>HAVING</code></td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>3. GROUP BY and clause order</h3>
+    <ul>
+      <li>Every non-aggregate column in <code>SELECT</code> must appear in <code>GROUP BY</code>.</li>
+      <li><code>GROUP BY</code> is used with aggregate functions. Mix aggregates with plain columns and you must group by the plain columns.</li>
+    </ul>
+<pre><code class="sql">SELECT → FROM → JOIN → WHERE → GROUP BY → HAVING → ORDER BY</code></pre>
+
+    <h3>4. Common query errors</h3>
+    <div class="table-scroll"><table class="ref">
+      <thead><tr><th>Error</th><th>What's wrong</th></tr></thead>
+      <tbody>
+        <tr><td>Aggregate in WHERE</td><td>Aggregates belong in HAVING</td></tr>
+        <tr><td>Missing GROUP BY column</td><td>Every non-aggregate in SELECT must be in GROUP BY</td></tr>
+        <tr><td>Ambiguous column</td><td>A column that exists in both joined tables must be prefixed with its table name or alias</td></tr>
+        <tr><td>Wrong join type</td><td>Using INNER JOIN when the question wants all rows from one side (or an outer join on the wrong side)</td></tr>
+        <tr><td>Clause out of order</td><td>WHERE after GROUP BY instead of before</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Drill: spot the error</h3>
+    <p>Pick which of the five errors each query has. The fixed query appears after you answer.</p>
+    <p class="score" id="spot-score" aria-live="polite"></p>
+    <div id="spot-root"></div>
+    <button class="btn" id="q2-reset">Reset both drills</button>
+
+    <div class="note"><b>Night before</b>
+      <p>Four join types and when to use each. WHERE vs HAVING. Clause order. The GROUP BY rule. Then sleep.</p>
+    </div>
+  </section>
+
+  <!-- ============ PATTERN FINDER ============ -->
+  <section class="topic" id="find">
+    <p class="eyebrow">Start here</p>
+    <h2>Find the pattern</h2>
+    <p>Type a word from the question: <em>never</em>, <em>each</em>, <em>more than</em>, <em>highest</em>, <em>view</em>, <em>union</em>, <em>year</em>. Tap a card to open the skeleton. All names use The Monthly Desk tables.</p>
+    <div class="finder">
+      <input type="search" id="pat-q" placeholder="Search: never, for each, more than, average, view..." aria-label="Search patterns" autocomplete="off">
+      <p class="pat-count" id="pat-count" aria-live="polite"></p>
+    </div>
+    <div id="pat-list"></div>
+    <p class="empty" id="pat-empty" hidden>Nothing matches. Try a shorter word, like "count" or "join".</p>
+  </section>
+
+  <!-- ============ JOINS LAB ============ -->
+  <section class="topic" id="joins">
+    <p class="eyebrow">Day 13 and 14</p>
+    <h2>Joins, counts and "never happened"</h2>
+    <p>Parent rows have a primary key. Child rows hold a foreign key pointing back. <strong>INNER JOIN</strong> keeps only parents that have a child. <strong>LEFT OUTER JOIN</strong> from the parent keeps every parent and fills the child columns with <code>NULL</code> when there is no match. Two quiz favourites hide in that second case: the count, and the filter for parents with no children.</p>
+    <div class="lab">
+      <div class="lab-head"><span>Join lab</span><span>sample rows, not your real data</span></div>
+      <div class="lab-body">
+        <div class="tables">
+          <div class="tbl"><div class="cap">OFFICETYPE (parent)</div><div class="scroll" id="jl-parent"></div></div>
+          <div class="tbl"><div class="cap">OFFICE (child)</div><div class="scroll" id="jl-child"></div></div>
+        </div>
+        <div class="row" role="group" aria-label="Join type">
+          <button class="tab" data-k="join" data-v="inner">INNER JOIN</button>
+          <button class="tab" data-k="join" data-v="left">LEFT OUTER JOIN</button>
+          <button class="tab" data-k="join" data-v="full">FULL OUTER JOIN</button>
+        </div>
+        <div class="row" role="group" aria-label="What to do with the result">
+          <button class="tab" data-k="mode" data-v="rows">Show joined rows</button>
+          <button class="tab" data-k="mode" data-v="star">COUNT(*) per type</button>
+          <button class="tab" data-k="mode" data-v="col">COUNT(O.OFFICENUMBER) per type</button>
+          <button class="tab" data-k="mode" data-v="never">Only types with no offices</button>
+        </div>
+        <pre><code class="sql" id="jl-sql"></code></pre>
+        <div class="scroll" style="overflow-x:auto" id="jl-out"></div>
+        <p class="out" id="jl-why"></p>
+      </div>
+    </div>
+    <p>Try <code>FULL OUTER JOIN</code> in the lab: here it matches the left join, because every office must point to an existing office type (a child can't be unmatched). A full join only differs from a left join when <em>both</em> sides can have rows with no partner.</p>
+    <p>Rules of thumb from your notes: "for <strong>all</strong> ___" means an outer join from the parent. "Never" means <code>IS NULL</code> (never <code>= NULL</code>) or <code>NOT IN</code>. Count the child's key, not <code>*</code>, when zero is a valid answer. Prefix every column with its table alias whenever there are two or more tables.</p>
+  </section>
+
+  <!-- ============ SUBQUERIES ============ -->
+  <section class="topic" id="subq">
+    <p class="eyebrow">Day 14 and 15</p>
+    <h2>Subqueries: the inner query runs first</h2>
+    <p>A subquery is a complete SELECT in brackets, used in <code>WHERE</code> or <code>HAVING</code>. The inner query runs once, and the outer query then runs with its result. Course focus is nested subqueries.</p>
+    <div class="table-scroll"><table class="ref">
+      <thead><tr><th>Subquery returns</th><th>Use</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>One value</td><td><code>=  &gt;  &lt;  &gt;=  &lt;=  &lt;&gt;</code></td><td><code>WHERE MonthlyRent &gt; (SELECT AVG(MonthlyRent) FROM Office)</code></td></tr>
+        <tr><td>A list</td><td><code>IN</code> / <code>NOT IN</code></td><td><code>WHERE StudentID IN (SELECT StudentID FROM Payment)</code></td></tr>
+        <tr><td>A list, other comparisons</td><td><code>&gt; ANY</code>, <code>&gt; ALL</code> (also <code>&lt;</code>, <code>&gt;=</code>…)</td><td><code>HAVING COUNT(x) &gt;= ALL (SELECT COUNT(x) … GROUP BY …)</code></td></tr>
+        <tr><td>A table</td><td><code>FROM ( … ) alias</code></td><td>Alias is required in PostgreSQL</td></tr>
+      </tbody>
+    </table></div>
+    <div class="lab">
+      <div class="lab-head"><span>Subquery stepper</span><span>from the Day 15 slides</span></div>
+      <div class="lab-body">
+        <div class="row" id="sq-tabs" role="group" aria-label="Example"></div>
+        <div id="sq-steps" style="display:grid;gap:0.6rem"></div>
+        <div class="row"><button class="btn primary" id="sq-next">Next step</button><button class="btn" id="sq-reset">Start over</button></div>
+      </div>
+    </div>
+    <ul>
+      <li>With <code>=</code> the subquery must return exactly one value. Several values give <em>"more than one row returned by a subquery used as an expression"</em>. Switch to <code>IN</code>.</li>
+      <li>Don't add <code>DISTINCT</code> inside an <code>IN</code> subquery. Your Day 15 slides say testing shows it is slower.</li>
+      <li><code>&gt; ANY</code> means greater than at least one value (so greater than the smallest). <code>&gt; ALL</code> means greater than every value (so greater than the largest). <code>ANY</code> and <code>SOME</code> are interchangeable.</li>
+      <li>Correlated subqueries are <strong>not assessed in SDEV1201</strong> according to your Day 16 handout. Neither are cross joins.</li>
+    </ul>
+    <div class="note"><b>NOT IN and NULL</b>
+      <p>If the subquery's list contains a <code>NULL</code>, <code>NOT IN</code> returns no rows at all. Foreign keys that are <code>NOT NULL</code> are safe. Otherwise add <code>WHERE column IS NOT NULL</code> inside the subquery.</p>
+    </div>
+  </section>
+
+  <!-- ============ UNION ============ -->
+  <section class="topic" id="union">
+    <p class="eyebrow">Day 15</p>
+    <h2>UNION</h2>
+    <p>Stacks the results of two or more SELECTs into one result. <code>UNION</code> drops duplicate rows. <code>UNION ALL</code> keeps them.</p>
+    <ol>
+      <li>Same number of columns in every query.</li>
+      <li>Similar datatypes in matching positions (a date and a varchar fail).</li>
+      <li><code>ORDER BY</code> goes once, at the very end.</li>
+      <li>Column names come from the <strong>first</strong> query.</li>
+    </ol>
+    <div class="lab">
+      <div class="lab-head"><span>UNION lab</span><span>sample values</span></div>
+      <div class="lab-body">
+        <div class="tables">
+          <div class="tbl"><div class="cap">Query 1: lease types</div><div class="scroll" id="un-a"></div></div>
+          <div class="tbl"><div class="cap">Query 2: office types</div><div class="scroll" id="un-b"></div></div>
+        </div>
+        <div class="row" role="group" aria-label="Union type">
+          <button class="tab" data-k="un" data-v="union">UNION</button>
+          <button class="tab" data-k="un" data-v="all">UNION ALL</button>
+          <label class="check"><input type="checkbox" id="un-order"> <span>Add <code>ORDER BY "Description"</code> at the end</span></label>
+        </div>
+        <pre><code class="sql" id="un-sql"></code></pre>
+        <div class="scroll" style="overflow-x:auto" id="un-out"></div>
+        <p class="out" id="un-why"></p>
+      </div>
+    </div>
+    <p>Same idea as the slide: 16 students plus 10 staff is 26 rows, but <code>UNION</code> returns 25 because one name appears in both lists.</p>
+  </section>
+
+  <!-- ============ VIEWS ============ -->
+  <section class="topic" id="views">
+    <p class="eyebrow">Day 14 and 16</p>
+    <h2>Views</h2>
+    <p>A view is a saved SELECT with a name. It behaves like a virtual table but stores no data; the query re-runs each time. Uses: simplify complex queries, hide the table structure, control which columns people can see.</p>
+<pre><code class="sql">DROP VIEW IF EXISTS VW_OfficeTypeRentSummary;          -- lets the script re-run
+
+CREATE VIEW VW_OfficeTypeRentSummary AS
+SELECT OT.OfficeTypeDescription,
+       AVG(O.MonthlyRent) AS "AVERAGE MONTHLY RENT"     -- alias becomes the view's column name
+FROM OfficeType OT
+INNER JOIN Office O ON OT.OfficeTypeCode = O.OfficeTypeCode
+GROUP BY OT.OfficeTypeDescription;
+
+SELECT OfficeTypeDescription, "AVERAGE MONTHLY RENT"    -- query it like a table, no join needed
+FROM VW_OfficeTypeRentSummary
+WHERE "AVERAGE MONTHLY RENT" &gt; 500;</code></pre>
+    <ul>
+      <li>Syntax: <code>CREATE [OR REPLACE] VIEW name AS SELECT …;</code> and <code>DROP VIEW [IF EXISTS] name;</code></li>
+      <li>Alias every calculated column. Quoted aliases must be quoted the same way (and are case sensitive) when you select from the view.</li>
+      <li>Create the view <strong>before</strong> any query that uses it, or you get <em>relation "x" does not exist</em>.</li>
+      <li>A filter on an aggregate (<code>"TOTAL" &gt; 5</code>) goes in the <code>WHERE</code> of the query on the view, because the aggregate is already a plain column there.</li>
+    </ul>
+    <h3>Can you INSERT, UPDATE or DELETE through it?</h3>
+    <div class="table-scroll"><table class="ref">
+      <thead><tr><th>View is built from</th><th>Modify through the view?</th></tr></thead>
+      <tbody>
+        <tr><td>One table, plain columns</td><td>Yes, and the table's constraints still apply</td></tr>
+        <tr><td>Two or more tables (joins)</td><td>No: <em>cannot insert into view</em>, also update and delete</td></tr>
+        <tr><td>Has <code>DISTINCT</code>, <code>GROUP BY</code>, <code>HAVING</code>, aggregates or <code>UNION</code></td><td>No</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ============ REFERENCE ============ -->
+  <section class="topic" id="ref">
+    <p class="eyebrow">Day 12</p>
+    <h2>Quick reference</h2>
+    <h3>Course rules</h3>
+    <ul class="checklist" id="rules"></ul>
+    <p class="pat-count" id="rules-count"></p>
+
+    <h3>WHERE operators</h3>
+    <div class="table-scroll"><table class="ref">
+      <thead><tr><th>Need</th><th>Syntax</th></tr></thead>
+      <tbody>
+        <tr><td>Compare</td><td><code>=  &lt;&gt;  !=  &lt;  &lt;=  &gt;  &gt;=</code></td></tr>
+        <tr><td>Both / either</td><td><code>AND</code> / <code>OR</code></td></tr>
+        <tr><td>Range, inclusive</td><td><code>BETWEEN a AND b</code>, <code>NOT BETWEEN</code></td></tr>
+        <tr><td>List</td><td><code>IN (a, b, c)</code>, <code>NOT IN</code></td></tr>
+        <tr><td>Wildcards</td><td><code>LIKE 'D%'</code> (% is many characters, _ is one). Case sensitive in PostgreSQL. With <code>=</code> the % is a literal character.</td></tr>
+        <tr><td>Regular expression</td><td><code>~ '^[A-J]'</code>. <code>^</code> start, <code>$</code> end, <code>.*</code> anything, <code>[T-Z]</code> a range.</td></tr>
+        <tr><td>NULL test</td><td><code>IS NULL</code> / <code>IS NOT NULL</code> (never <code>= NULL</code>)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Aggregates</h3>
+    <div class="table-scroll"><table class="ref">
+      <thead><tr><th>Function</th><th>Returns</th><th>NULLs</th></tr></thead>
+      <tbody>
+        <tr><td><code>AVG</code> / <code>SUM</code></td><td>Average / total, numeric only</td><td>Ignored</td></tr>
+        <tr><td><code>MIN</code> / <code>MAX</code></td><td>Smallest / largest: numbers, dates, text</td><td>Ignored</td></tr>
+        <tr><td><code>COUNT(col)</code></td><td>Number of non-null values</td><td>Ignored</td></tr>
+        <tr><td><code>COUNT(*)</code></td><td>Number of records</td><td>Counted</td></tr>
+        <tr><td><code>COUNT(DISTINCT x)</code></td><td>Number of unique values</td><td>Ignored</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>String, conversion and date functions</h3>
+    <div class="table-scroll"><table class="ref">
+      <thead><tr><th>Function</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code>Length(x)</code></td><td>Number of characters</td></tr>
+        <tr><td><code>Left(x, n)</code> / <code>Right(x, n)</code></td><td>First / last n characters</td></tr>
+        <tr><td><code>Substring(x, start, len)</code></td><td>len characters from position <code>start</code>. Positions start at <strong>1</strong>.</td></tr>
+        <tr><td><code>Upper(x)</code> / <code>Lower(x)</code> / <code>Reverse(x)</code></td><td>Change case / backwards</td></tr>
+        <tr><td><code>Ltrim(x)</code> / <code>Rtrim(x)</code></td><td>Remove leading / trailing spaces. Nest to trim both: <code>Ltrim(Rtrim(x))</code></td></tr>
+        <tr><td><code>a || ' ' || b</code></td><td>Concatenate. Any NULL part makes the result NULL.</td></tr>
+        <tr><td><code>Cast(x AS type)</code></td><td>Convert datatype, e.g. <code>Cast(Mark AS Varchar)</code></td></tr>
+        <tr><td><code>To_Char(x, fmt)</code></td><td>Value to formatted text: <code>To_Char(StartDate, 'YYYY')</code>, <code>To_Char(Mark, '999.99')</code></td></tr>
+        <tr><td><code>To_Date(str, fmt)</code> / <code>To_Number(str, fmt)</code></td><td>Text to date / number: <code>To_Date('19 Oct 2026', 'DD Mon YYYY')</code></td></tr>
+        <tr><td><code>Current_Date</code> / <code>Current_Time</code> / <code>Current_TimeStamp</code></td><td>System date / time / both</td></tr>
+        <tr><td><code>Date_Part('month', d)</code></td><td>A numeric part of a date</td></tr>
+        <tr><td><code>To_Char(d, 'DAY')</code></td><td>Day name. <code>'DAY'</code> gives MONDAY, <code>'Day'</code> gives Monday.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ============ SCHEMA ============ -->
+  <section class="topic" id="schema">
+    <p class="eyebrow">Day 12 script</p>
+    <h2>The Monthly Desk tables</h2>
+    <p>Read this before any join. Every question is answered by finding the PK to FK pairs, then following them. <span class="pk">PK</span> is a primary key, <span class="fk">FK</span> a foreign key, and grey columns allow NULL. Aliases come from your script comments.</p>
+    <div class="schema" id="schema-grid"></div>
+    <h3>Join paths (the ON conditions)</h3>
+    <div class="table-scroll"><table class="ref" id="fk-table">
+      <thead><tr><th>Child</th><th>Parent</th><th>ON</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <p><code>INVOICEITEM</code> is the junction between <code>INVOICE</code> and <code>OFFICEADDON</code>. Its rows are the "times an add-on was sold", so that's what you count. <code>LEASE</code> links a desk holder to an office and a lease type, and <code>INVOICE</code> hangs off <code>LEASE</code>.</p>
+  </section>
+
+  <!-- ============ ERRORS ============ -->
+  <section class="topic" id="errors">
+    <p class="eyebrow">When a query fails</p>
+    <h2>Error decoder</h2>
+    <input type="search" id="err-q" placeholder="Paste a few words of the error..." aria-label="Search errors" autocomplete="off">
+    <div class="table-scroll"><table class="ref" id="err-table">
+      <thead><tr><th>Message or symptom</th><th>Cause</th><th>Fix</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="topic" id="quiz">
+    <p class="eyebrow">Check yourself</p>
+    <h2>Practice quiz</h2>
+    <p class="score" id="quiz-score" aria-live="polite"></p>
+    <div id="quiz-root"></div>
+    <button class="btn" id="quiz-reset">Start over</button>
+  </section>
+</main>
+
+<script>
+(function () {
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  /* ---------- SQL highlighting ---------- */
+  const KW = 'SELECT|FROM|WHERE|GROUP BY|ORDER BY|HAVING|INNER JOIN|LEFT OUTER JOIN|RIGHT OUTER JOIN|LEFT JOIN|JOIN|ON|AND|OR|NOT|IN|IS|NULL|AS|DISTINCT|ALL|ANY|SOME|UNION|LIMIT|LIKE|BETWEEN|CREATE|OR REPLACE|VIEW|DROP|IF EXISTS|DESC|ASC|COUNT|SUM|AVG|MIN|MAX|CAST|TO_CHAR|TO_DATE|DATE_PART|SUBSTRING|VARCHAR|ROUND|LENGTH|UPPER|LOWER|LEFT|RIGHT|INSERT|INTO|VALUES|UPDATE|SET|DELETE';
+  const TOK = new RegExp("(--[^\\n]*)|('(?:[^']|'')*')|\\b(" + KW + ")\\b|\\b(\\d+(?:\\.\\d+)?)\\b", 'gi');
+  function hl(text) {
+    let out = '', last = 0, m;
+    TOK.lastIndex = 0;
+    while ((m = TOK.exec(text))) {
+      out += esc(text.slice(last, m.index));
+      const cls = m[1] ? 'com' : m[2] ? 'str' : m[3] ? 'kw' : 'num';
+      out += '<span class="' + cls + '">' + esc(m[0]) + '</span>';
+      last = TOK.lastIndex;
+    }
+    return out + esc(text.slice(last));
+  }
+  function highlightAll(root) {
+    (root || document).querySelectorAll('code.sql').forEach(c => { c.innerHTML = hl(c.textContent); });
+  }
+  function addCopy(pre) {
+    if (pre.querySelector('.copy')) return;
+    const b = document.createElement('button');
+    b.className = 'copy'; b.type = 'button'; b.textContent = 'Copy';
+    b.addEventListener('click', () => {
+      const text = pre.querySelector('code').textContent;
+      const done = ok => { b.textContent = ok ? 'Copied' : 'Select + Ctrl+C'; setTimeout(() => b.textContent = 'Copy', 1500); };
+      try { navigator.clipboard.writeText(text).then(() => done(true), () => done(false)); } catch (e) { done(false); }
+    });
+    pre.append(b);
+  }
+  function refreshCode(root) {
+    highlightAll(root);
+    (root || document).querySelectorAll('pre').forEach(addCopy);
+  }
+
+  function makeTable(cols, rows, hlFn) {
+    const t = document.createElement('table'); t.className = 'd';
+    const thead = document.createElement('tr');
+    cols.forEach(c => { const th = document.createElement('th'); th.textContent = c; thead.append(th); });
+    const head = document.createElement('thead'); head.append(thead); t.append(head);
+    const body = document.createElement('tbody');
+    rows.forEach(r => {
+      const tr = document.createElement('tr');
+      if (hlFn && hlFn(r)) tr.className = 'hl';
+      r.forEach(v => { const td = document.createElement('td'); if (v === null) { td.textContent = 'NULL'; td.className = 'null'; } else td.textContent = v; tr.append(td); });
+      body.append(tr);
+    });
+    t.append(body);
+    return t;
+  }
+
+  /* ---------- pattern data ---------- */
+  const patterns = [
+    { t: 'Filter rows with a condition', w: 'where, only, between, in, list, range, and, or',
+      sql: "SELECT OfficeNumber, MonthlyRent\nFROM Office\nWHERE MonthlyRent BETWEEN 300 AND 500   -- inclusive on both ends\n  AND WindowStatus IN ('O', 'F')\nORDER BY MonthlyRent DESC;",
+      notes: ['<code>BETWEEN</code> includes both ends. <code>NOT BETWEEN</code> and <code>NOT IN</code> give the outside.', 'Several <code>ORDER BY</code> columns: first one sorts, ties go to the next.'] },
+    { t: 'Text starts with, contains, or fits a pattern', w: 'like, starts with, begins, ends, contains, regular expression, letter, wildcard',
+      sql: "SELECT FirstName, LastName\nFROM DeskHolder\nWHERE FirstName LIKE 'D%'        -- starts with D\n   OR FirstName LIKE 'Ja_'       -- exactly 3 letters, starts with Ja\n   OR LastName ~ '^[A-J]';       -- regex: starts with A to J",
+      notes: ['<code>LIKE</code> is <strong>case sensitive</strong> in PostgreSQL. <code>%</code> is any number of characters, <code>_</code> is exactly one.', 'Regex: <code>^</code> start, <code>$</code> end, <code>.*</code> anything, <code>[T-Z]</code> a range of letters. Example: <code>~ \'^[T-Z].*[0-3]$\'</code>.'] },
+    { t: 'Combine columns into one (full name, address)', w: 'concatenate, full name, as one column, combine, full address, ||',
+      sql: "SELECT DH.FirstName || ' ' || DH.LastName AS \"Desk Holder\"\nFROM DeskHolder DH;\n\n-- parts of an address\n-- A.Street || ', ' || A.City || ', ' || A.Province AS \"Full Address\"",
+      notes: ['The space or comma is just a quoted string. Without <code>\' \'</code> you get one long name.', 'Every calculated column needs a name (<code>AS "Name"</code>). A NULL in any part makes the whole result NULL.'] },
+    { t: 'One number for the whole table', w: 'average, total, sum, lowest, highest, min, max, count, how many, aggregate',
+      sql: "SELECT COUNT(*)           AS \"Number of Offices\",\n       AVG(MonthlyRent)   AS \"Average Rent\",\n       MAX(MonthlyRent)   AS \"Highest Rent\"\nFROM Office;",
+      notes: ['Aggregates ignore NULLs, except <code>COUNT(*)</code>, which counts records.', 'Alias every aggregate. A plain column next to an aggregate needs <code>GROUP BY</code>.'] },
+    { t: 'A number for each group ("for each", "per")', w: 'each, per, every, group by, subtotal, how many per, by',
+      sql: "SELECT OfficeTypeCode, AVG(MonthlyRent) AS \"Average Rent\"\nFROM Office\nGROUP BY OfficeTypeCode;",
+      notes: ['"For each" means <code>GROUP BY</code>.', 'Every non-aggregate column in <code>SELECT</code> must also be in <code>GROUP BY</code>. If you select an ID and a description, group by both.'] },
+    { t: 'Filter groups ("more than", "at least", "only those with")', w: 'having, more than, at least, greater than count, only groups, over',
+      sql: "SELECT OfficeTypeCode, COUNT(*) AS \"Number of Offices\"\nFROM Office\nGROUP BY OfficeTypeCode\nHAVING COUNT(*) > 2;",
+      notes: ['<code>WHERE</code> filters rows <em>before</em> grouping. <code>HAVING</code> filters groups <em>after</em>. A condition on a count or average is always <code>HAVING</code>.', 'You do not have to <code>SELECT</code> the count to filter on it.', 'No <code>GROUP BY</code> in the query means you want <code>WHERE</code>.'] },
+    { t: 'Join two or more tables', w: 'join, inner join, on, related, together, from two tables, three tables, details, show names, record number',
+      sql: "SELECT L.LeaseNumber, L.StartDate,\n       DH.FirstName || ' ' || DH.LastName AS \"Desk Holder\",\n       O.OfficeNumber\nFROM Lease L\nINNER JOIN DeskHolder DH ON L.DeskHolderID = DH.DeskHolderID\nINNER JOIN Office O      ON L.OfficeNumber = O.OfficeNumber\nWHERE L.LeaseNumber = 4;",
+      notes: ['One <code>INNER JOIN … ON</code> per extra table. The ON compares the parent PK to the child FK.', 'Prefix every column with its alias when there are 2+ tables, even if it is not ambiguous.', 'The same table through two different FKs needs two different aliases.', 'Forget the <code>ON</code> and you get rows × rows (10 staff × 7 positions = 70).'] },
+    { t: 'All parents, even those with none ("for all", "include")', w: 'all, include zero, even if none, outer join, left join, no matches, including, with zero',
+      sql: "SELECT OT.OfficeTypeCode, OT.OfficeTypeDescription,\n       COUNT(O.OfficeNumber) AS \"Number of Offices\"\nFROM OfficeType OT\nLEFT OUTER JOIN Office O ON OT.OfficeTypeCode = O.OfficeTypeCode\nGROUP BY OT.OfficeTypeCode, OT.OfficeTypeDescription;",
+      notes: ['<code>LEFT</code> keeps all rows of the table <em>before</em> the join, <code>RIGHT</code> the one after. Parent on the left is the convention.', 'Count the child key: <code>COUNT(O.OfficeNumber)</code> gives 0, but <code>COUNT(*)</code> counts the NULL row and says 1.', 'An outer join from the child side is pointless: every child already has a parent.'] },
+    { t: 'Which join? The four join types', w: 'join type, inner, left, right, full outer, which join, all rows from both, matching only, parent first, child first',
+      sql: "-- only matching rows\nFROM Position P INNER JOIN Staff S ON P.PositionID = S.PositionID\n\n-- all parents (parent listed first)\nFROM Position P LEFT OUTER JOIN Staff S ON P.PositionID = S.PositionID\n\n-- all parents (child listed first)\nFROM Staff S RIGHT OUTER JOIN Position P ON P.PositionID = S.PositionID\n\n-- every row from both tables\nFROM Position P FULL OUTER JOIN Staff S ON P.PositionID = S.PositionID",
+      notes: ['Ask: which table do I want <em>every</em> row from? Left is the table before the join keyword, right is the one after.', 'Only matches in both: <code>INNER</code>. All rows from both sides: <code>FULL OUTER</code>.'] },
+    { t: 'Never happened, version A: outer join + IS NULL', w: 'never, no, without, not sold, not leased, none, has not, unmatched, is null',
+      sql: "-- add-ons that have never been sold\nSELECT OAO.AddOnNumber, OAO.AddOnDescription\nFROM OfficeAddOn OAO\nLEFT OUTER JOIN InvoiceItem II ON OAO.AddOnNumber = II.AddOnNumber\nWHERE II.AddOnNumber IS NULL;",
+      notes: ['The outer join keeps every add-on. Unmatched ones have NULL child columns, and <code>IS NULL</code> keeps only those.', 'Use <code>IS NULL</code>, never <code>= NULL</code>.'] },
+    { t: 'Never happened, version B: NOT IN subquery', w: 'never, no, without, not in, must use a subquery, not sold, not leased, none',
+      sql: "SELECT OAO.AddOnNumber, OAO.AddOnDescription\nFROM OfficeAddOn OAO\nWHERE OAO.AddOnNumber NOT IN (SELECT II.AddOnNumber FROM InvoiceItem II);",
+      notes: ['When the question says "you must use a subquery", use this one.', 'If the subquery column can be NULL, <code>NOT IN</code> returns nothing. Add <code>WHERE col IS NOT NULL</code> inside.'] },
+    { t: 'Compare to an average or max (single-value subquery)', w: 'subquery, above average, below average, greater than the average, equals the highest, equals the lowest, compare',
+      sql: "SELECT OfficeNumber, SquareFootage\nFROM Office\nWHERE SquareFootage < (SELECT AVG(SquareFootage) FROM Office);\n\nSELECT InvoiceNumber, InvoiceTotal\nFROM Invoice\nWHERE InvoiceTotal = (SELECT MAX(InvoiceTotal) FROM Invoice);",
+      notes: ['The inner query runs first and returns one value; the outer compares against it.', 'Looking up a code by name works the same way: <code>WHERE ReferralSourceCode = (SELECT ReferralSourceCode FROM ReferralSource WHERE ReferralSourceDescription = \'Google Ads\')</code>.'] },
+    { t: 'Rows that appear in another table (IN subquery)', w: 'in, subquery, list, who have, that have made, exist in other table',
+      sql: "SELECT DeskHolderID, FirstName, LastName\nFROM DeskHolder\nWHERE DeskHolderID IN (SELECT DeskHolderID FROM Lease);",
+      notes: ['Use <code>IN</code>, not <code>=</code>, whenever the subquery can return several rows.'] },
+    { t: 'The one with the most (ties don\'t matter)', w: 'most, highest, top, largest, maximum, busiest, limit',
+      sql: "SELECT DH.FirstName, DH.LastName\nFROM DeskHolder DH\nINNER JOIN Lease L ON DH.DeskHolderID = L.DeskHolderID\nGROUP BY DH.DeskHolderID, DH.FirstName, DH.LastName\nORDER BY COUNT(*) DESC\nLIMIT 1;",
+      notes: ['<code>ORDER BY</code> can sort by an aggregate that is not in the SELECT list.', 'If two people tie, <code>LIMIT 1</code> shows only one.'] },
+    { t: 'The one with the most (keep ties)', w: 'most, highest, ties, maximum, all, city with the most, tied',
+      sql: "-- version 1: ALL (Day 15 slides)\nSELECT DH.FirstName, DH.LastName\nFROM DeskHolder DH\nINNER JOIN Lease L ON DH.DeskHolderID = L.DeskHolderID\nGROUP BY DH.DeskHolderID, DH.FirstName, DH.LastName\nHAVING COUNT(L.LeaseNumber) >= ALL (SELECT COUNT(LeaseNumber)\n                                    FROM Lease\n                                    GROUP BY DeskHolderID);\n\n-- version 2: MAX of the counts (derived table needs an alias)\n... HAVING COUNT(*) = (SELECT MAX(Counts.Total)\n                       FROM (SELECT COUNT(*) AS Total FROM Lease GROUP BY DeskHolderID) Counts);",
+      notes: ['The inner query counts per group. The outer keeps groups whose count is at least every one of them, which is the maximum.', 'A subquery in <code>FROM</code> must have an alias in PostgreSQL.'] },
+    { t: 'Greater than ANY / ALL values', w: 'any, all, some, greater than all, greater than any, larger than every',
+      sql: "SELECT OfficeNumber, MonthlyRent\nFROM Office\nWHERE MonthlyRent > ALL (SELECT MonthlyRent FROM Office WHERE OfficeTypeCode = 1);",
+      notes: ['<code>&gt; ALL</code>: bigger than every value (the max). <code>&gt; ANY</code> or <code>&gt; SOME</code>: bigger than at least one (the min).'] },
+    { t: 'Combine two result lists', w: 'union, union all, combine, stack, together, one list, single column',
+      sql: "SELECT AddOnNumber AS \"Number List\"\nFROM OfficeAddOn\nUNION\nSELECT LeaseTypeNumber\nFROM LeaseType\nORDER BY \"Number List\";",
+      notes: ['Same column count, similar datatypes, names from the first query, one <code>ORDER BY</code> at the very end.', '<code>UNION</code> removes duplicates. <code>UNION ALL</code> keeps them.'] },
+    { t: 'Group by year or month', w: 'year, month, date, per year, started in, by year, date part, to_char',
+      sql: "SELECT TO_CHAR(StartDate, 'YYYY') AS \"LEASE YEAR\",\n       COUNT(LeaseNumber)         AS \"NUMBER OF LEASES\"\nFROM Lease\nGROUP BY TO_CHAR(StartDate, 'YYYY')\nORDER BY \"LEASE YEAR\";",
+      notes: ['Group by the same expression you select. <code>Date_Part(\'year\', StartDate)</code> works too and returns a number.'] },
+    { t: 'Create a view, then query it', w: 'view, create view, virtual table, using the view, vw_',
+      sql: "DROP VIEW IF EXISTS VW_InvoiceTotals;\n\nCREATE VIEW VW_InvoiceTotals AS\nSELECT InvoiceNumber, SUM(InvoiceAddOnPrice) AS \"TOTAL ADD-ON PRICE\"\nFROM InvoiceItem\nGROUP BY InvoiceNumber;\n\nSELECT InvoiceNumber, \"TOTAL ADD-ON PRICE\"\nFROM VW_InvoiceTotals\nWHERE \"TOTAL ADD-ON PRICE\" > 500;",
+      notes: ['Aggregate filter on the view is a plain <code>WHERE</code> because the aggregate is just a column there.', 'Create the view before selecting from it.'] },
+    { t: 'Unique values only', w: 'distinct, unique, no duplicates, different',
+      sql: "SELECT DISTINCT ReferralSourceCode\nFROM DeskHolder;",
+      notes: ['<code>DISTINCT</code> applies to the whole row of selected columns. Inside an aggregate, <code>COUNT(DISTINCT x)</code> counts unique values.'] }
+  ];
+  const patList = $('#pat-list'), patQ = $('#pat-q'), patCount = $('#pat-count'), patEmpty = $('#pat-empty');
+  patterns.forEach(p => {
+    const d = document.createElement('details'); d.className = 'pat';
+    d.dataset.search = (p.t + ' ' + p.w + ' ' + p.sql).toLowerCase();
+    const s = document.createElement('summary');
+    s.innerHTML = '<span class="t"></span><span class="w"></span>';
+    s.querySelector('.t').textContent = p.t;
+    s.querySelector('.w').textContent = 'Question words: ' + p.w;
+    d.append(s);
+    const body = document.createElement('div'); body.className = 'pat-body';
+    const pre = document.createElement('pre'); const code = document.createElement('code'); code.className = 'sql'; code.textContent = p.sql; pre.append(code);
+    body.append(pre);
+    const ul = document.createElement('ul'); p.notes.forEach(n => { const li = document.createElement('li'); li.innerHTML = n; ul.append(li); });
+    body.append(ul); d.append(body); patList.append(d);
+  });
+  function filterPatterns() {
+    const terms = patQ.value.toLowerCase().split(/\s+/).filter(Boolean);
+    let n = 0;
+    patList.querySelectorAll('.pat').forEach(d => {
+      const ok = terms.every(t => d.dataset.search.includes(t));
+      d.hidden = !ok; if (ok) n++;
+    });
+    patCount.textContent = n + ' of ' + patterns.length + ' patterns';
+    patEmpty.hidden = n > 0;
+  }
+  patQ.addEventListener('input', filterPatterns);
+  filterPatterns();
+
+  /* ---------- join lab ---------- */
+  const OT = [[1, 'Single Office'], [2, 'Double Office'], [3, 'Office Suite']];
+  const OF = [[101, 'Pine', 1], [102, 'Oak', 1], [201, 'Birch', 2]];
+  $('#jl-parent').append(makeTable(['OFFICETYPECODE', 'OFFICETYPEDESCRIPTION'], OT));
+  $('#jl-child').append(makeTable(['OFFICENUMBER', 'NAME', 'OFFICETYPECODE'], OF));
+  const jl = { join: 'left', mode: 'rows' };
+  function renderJoin() {
+    const left = jl.join !== 'inner';
+    const joinKw = { inner: 'INNER JOIN', left: 'LEFT OUTER JOIN', full: 'FULL OUTER JOIN' }[jl.join];
+    let joined = [];
+    OT.forEach(t => {
+      const kids = OF.filter(o => o[2] === t[0]);
+      if (kids.length) kids.forEach(k => joined.push({ code: t[0], desc: t[1], off: k[0] }));
+      else if (left) joined.push({ code: t[0], desc: t[1], off: null });
+    });
+    let sql, cols, rows, why;
+    const from = 'FROM OFFICETYPE OT\n' + joinKw + ' OFFICE O ON OT.OFFICETYPECODE = O.OFFICETYPECODE';
+    if (jl.mode === 'rows') {
+      sql = 'SELECT OT.OFFICETYPEDESCRIPTION, O.OFFICENUMBER\n' + from + ';';
+      cols = ['OFFICETYPEDESCRIPTION', 'OFFICENUMBER']; rows = joined.map(j => [j.desc, j.off]);
+      why = left ? 'Office Suite has no offices, but the outer join keeps it and fills OFFICENUMBER with NULL.' + (jl.join === 'full' ? ' FULL OUTER also keeps unmatched rows from the office side, but there are none because every office has a type.' : '') : 'INNER JOIN drops Office Suite because no office points to it.';
+    } else if (jl.mode === 'never') {
+      sql = 'SELECT OT.OFFICETYPEDESCRIPTION\n' + from + '\nWHERE O.OFFICENUMBER IS NULL;';
+      cols = ['OFFICETYPEDESCRIPTION']; rows = joined.filter(j => j.off === null).map(j => [j.desc]);
+      why = left ? 'Only the unmatched parent has a NULL child key, so IS NULL keeps just Office Suite.' : 'With INNER JOIN there are no unmatched parents to find. The "never" pattern needs LEFT OUTER JOIN.';
+    } else {
+      const star = jl.mode === 'star';
+      const agg = star ? 'COUNT(*)' : 'COUNT(O.OFFICENUMBER)';
+      sql = 'SELECT OT.OFFICETYPEDESCRIPTION, ' + agg + ' AS "Number of Offices"\n' + from + '\nGROUP BY OT.OFFICETYPECODE, OT.OFFICETYPEDESCRIPTION;';
+      cols = ['OFFICETYPEDESCRIPTION', 'Number of Offices'];
+      rows = OT.map(t => {
+        const g = joined.filter(j => j.code === t[0]);
+        if (!g.length) return null;
+        return [t[1], star ? g.length : g.filter(j => j.off !== null).length];
+      }).filter(Boolean);
+      if (!left) why = 'INNER JOIN: Office Suite is missing from the result entirely, so there is no zero row to count.';
+      else why = star ? 'COUNT(*) counts the NULL row that the outer join created, so Office Suite shows 1. That is wrong.' : 'COUNT(O.OFFICENUMBER) ignores the NULL, so Office Suite correctly shows 0.';
+    }
+    $('#jl-sql').textContent = sql; highlightAll($('#jl-sql').parentNode);
+    const out = $('#jl-out'); out.textContent = '';
+    out.append(makeTable(cols, rows, r => r.length === 2 && jl.mode !== 'rows' ? (r[1] === 1 && jl.mode === 'star' && left && r[0] === 'Office Suite') || (r[1] === 0) : r[1] === null));
+    $('#jl-why').textContent = why;
+    document.querySelectorAll('[data-k="join"]').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === jl.join));
+    document.querySelectorAll('[data-k="mode"]').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === jl.mode));
+  }
+  document.querySelectorAll('[data-k="join"],[data-k="mode"]').forEach(b => b.addEventListener('click', () => { jl[b.dataset.k] = b.dataset.v; renderJoin(); }));
+
+  /* ---------- union lab ---------- */
+  const UA = ['Monthly', 'Annual', 'Day Pass'];
+  const UB = ['Single Office', 'Shared Office', 'Monthly'];
+  $('#un-a').append(makeTable(['LEASETYPEDESCRIPTION'], UA.map(v => [v])));
+  $('#un-b').append(makeTable(['OFFICETYPEDESCRIPTION'], UB.map(v => [v])));
+  const un = { un: 'union' };
+  function renderUnion() {
+    const all = un.un === 'all', ord = $('#un-order').checked;
+    const sql = 'SELECT LEASETYPEDESCRIPTION AS "Description"\nFROM LEASETYPE\n' + (all ? 'UNION ALL' : 'UNION') + '\nSELECT OFFICETYPEDESCRIPTION\nFROM OFFICETYPE' + (ord ? '\nORDER BY "Description"' : '') + ';';
+    let rows = UA.concat(UB);
+    if (!all) rows = [...new Set(rows)];
+    if (ord) rows = rows.slice().sort();
+    $('#un-sql').textContent = sql; highlightAll($('#un-sql').parentNode);
+    const out = $('#un-out'); out.textContent = '';
+    out.append(makeTable(['Description'], rows.map(v => [v]), r => r[0] === 'Monthly'));
+    $('#un-why').textContent = (all ? 'UNION ALL keeps both "Monthly" rows: 6 rows.' : 'UNION removes the duplicate "Monthly": 5 rows.') + ' The column is called "Description" because the first query names it.';
+    document.querySelectorAll('[data-k="un"]').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === un.un));
+  }
+  document.querySelectorAll('[data-k="un"]').forEach(b => b.addEventListener('click', () => { un.un = b.dataset.v; renderUnion(); }));
+  $('#un-order').addEventListener('change', renderUnion);
+
+  /* ---------- subquery stepper ---------- */
+  const examples = [
+    { name: '= (one value)', steps: [
+      ['Written', "SELECT FirstName, LastName\nFROM Staff\nWHERE PositionID = (SELECT PositionID\n                    FROM Position\n                    WHERE PositionDescription = 'Dean');"],
+      ['Inner query runs first', "SELECT PositionID FROM Position WHERE PositionDescription = 'Dean';\n-- returns: 1"],
+      ['Outer query runs with that value', "SELECT FirstName, LastName\nFROM Staff\nWHERE PositionID = (1);\n-- returns: Hugh Guy"] ] },
+    { name: 'IN (a list)', steps: [
+      ['Written', "SELECT FirstName, LastName\nFROM Student\nWHERE StudentID IN (SELECT StudentID FROM Payment);"],
+      ['Inner query runs first', "SELECT StudentID FROM Payment;\n-- returns every StudentID that has a payment (repeats are fine)"],
+      ['Outer query keeps matching students', "SELECT FirstName, LastName\nFROM Student\nWHERE StudentID IN (id1, id2, id3, ...);\n-- students who have made payments (33 of them in the course data)"] ] },
+    { name: 'NOT IN (never)', steps: [
+      ['Written', "SELECT FirstName, LastName\nFROM Student\nWHERE StudentID NOT IN (SELECT StudentID FROM Payment);"],
+      ['Inner query runs first', "SELECT StudentID FROM Payment;\n-- the IDs that DO appear"],
+      ['Outer query keeps everyone else', "-- students whose ID is not in that list: the 9 who never paid\n-- (if the list contained a NULL, this would return nothing)"] ] },
+    { name: '>= ALL (the most)', steps: [
+      ['Written', "SELECT City\nFROM Student\nGROUP BY City\nHAVING COUNT(StudentID) >= ALL (SELECT COUNT(StudentID)\n                                FROM Student\n                                GROUP BY City);"],
+      ['Inner query runs first', "SELECT COUNT(StudentID) FROM Student GROUP BY City;\n-- returns: 1, 1, 2, 1, 8, 1, 1, 1"],
+      ['Outer query compares each city', "SELECT City\nFROM Student\nGROUP BY City\nHAVING COUNT(StudentID) >= ALL (1, 1, 2, 1, 8, 1, 1, 1);\n-- only the city whose count is 8 passes: the city with the most students"] ] }
+  ];
+  let exI = 0, stI = 0;
+  const sqTabs = $('#sq-tabs'), sqSteps = $('#sq-steps');
+  examples.forEach((e, i) => {
+    const b = document.createElement('button'); b.className = 'tab'; b.type = 'button'; b.textContent = e.name;
+    b.addEventListener('click', () => { exI = i; stI = 0; renderSteps(); });
+    sqTabs.append(b);
+  });
+  function renderSteps() {
+    sqSteps.textContent = '';
+    const ex = examples[exI];
+    ex.steps.slice(0, stI + 1).forEach((s, i) => {
+      const d = document.createElement('div'); d.className = 'step';
+      const n = document.createElement('div'); n.className = 'n'; n.textContent = 'Step ' + (i + 1) + ' · ' + s[0];
+      const pre = document.createElement('pre'); const code = document.createElement('code'); code.className = 'sql'; code.textContent = s[1]; pre.append(code);
+      d.append(n, pre); sqSteps.append(d);
+    });
+    refreshCode(sqSteps);
+    $('#sq-next').disabled = stI >= ex.steps.length - 1;
+    sqTabs.querySelectorAll('.tab').forEach((b, i) => b.setAttribute('aria-pressed', i === exI));
+  }
+  $('#sq-next').addEventListener('click', () => { stI++; renderSteps(); });
+  $('#sq-reset').addEventListener('click', () => { stI = 0; renderSteps(); });
+
+  /* ---------- rules checklist ---------- */
+  const rules = [
+    'Prefix every column with its table alias when the query has 2+ tables',
+    'Name every calculated and aggregate column: AS "Name"',
+    'No * in the column list (COUNT(*) is fine)',
+    'Every non-aggregate SELECT column is in GROUP BY',
+    'Aggregate conditions go in HAVING, never WHERE',
+    'End every statement with a semicolon',
+    'Clauses are in order: SELECT, FROM, JOIN, WHERE, GROUP BY, HAVING, ORDER BY',
+    'Views are created before they are queried'
+  ];
+  const ruleUl = $('#rules');
+  rules.forEach((r, i) => {
+    const li = document.createElement('li');
+    const l = document.createElement('label'); l.className = 'check';
+    const c = document.createElement('input'); c.type = 'checkbox'; c.id = 'rule-' + i;
+    const s = document.createElement('span'); s.textContent = r;
+    l.append(c, s); li.append(l); ruleUl.append(li);
+    c.addEventListener('change', updateRules);
+  });
+  function updateRules() {
+    const n = ruleUl.querySelectorAll('input:checked').length;
+    $('#rules-count').textContent = 'Checked ' + n + ' of ' + rules.length + ' (tick them off as you review your answers)';
+  }
+  updateRules();
+
+  /* ---------- schema ---------- */
+  const tables = [
+    { n: 'OFFICETYPE', a: 'OT', c: [['OFFICETYPECODE', 'pk'], ['OFFICETYPEDESCRIPTION', '']] },
+    { n: 'REFERRALSOURCE', a: 'RS', c: [['REFERRALSOURCECODE', 'pk'], ['REFERRALSOURCEDESCRIPTION', '']] },
+    { n: 'OFFICE', a: 'O', c: [['OFFICENUMBER', 'pk'], ['MONTHLYRENT', ''], ['SQUAREFOOTAGE', ''], ['BOOKSHELFYN', ''], ['EXTRAFILINGCABINETYN', ''], ['MEETINGTABLEYN', ''], ['WINDOWQUANTITY', ''], ['WINDOWSTATUS', ''], ['OFFICETYPECODE', 'fk']] },
+    { n: 'DESKHOLDER', a: 'DH', c: [['DESKHOLDERID', 'pk'], ['FIRSTNAME', ''], ['LASTNAME', ''], ['COMPANYNAME', 'null'], ['EMAILADDRESS', ''], ['CELLPHONENUMBER', ''], ['CREDITCARDNUMBER', 'null'], ['REFERRALSOURCECODE', 'fk']] },
+    { n: 'LEASETYPE', a: 'LT', c: [['LEASETYPENUMBER', 'pk'], ['LEASETYPEDESCRIPTION', '']] },
+    { n: 'LEASE', a: 'L / LSE', c: [['LEASENUMBER', 'pk'], ['STARTDATE', ''], ['ENDDATE', 'null'], ['TOTALLEASECOST', 'null'], ['TOTALLEASEPRICE', 'null'], ['OFFICENUMBER', 'fk'], ['DESKHOLDERID', 'fk'], ['LEASETYPENUMBER', 'fk']] },
+    { n: 'OFFICEADDON', a: 'OAO', c: [['ADDONNUMBER', 'pk'], ['ADDONDESCRIPTION', ''], ['CURRENTCOST', ''], ['CURRENTPRICE', ''], ['DISCOUNT', 'null']] },
+    { n: 'INVOICE', a: 'INV', c: [['INVOICENUMBER', 'pk'], ['INVOICEDATE', ''], ['PAIDYN', 'null'], ['INVOICEGST', ''], ['INVOICETOTAL', ''], ['LEASENUMBER', 'fk']] },
+    { n: 'INVOICEITEM', a: 'II', c: [['INVOICENUMBER', 'pkfk'], ['ADDONNUMBER', 'pkfk'], ['QUANTITYSOLD', ''], ['INVOICEADDONCOST', ''], ['INVOICEADDONPRICE', '']] }
+  ];
+  const grid = $('#schema-grid');
+  tables.forEach(t => {
+    const d = document.createElement('div'); d.className = 'sc';
+    const h = document.createElement('h4'); h.textContent = t.n; const sp = document.createElement('span'); sp.textContent = t.a; h.append(sp);
+    const ul = document.createElement('ul');
+    t.c.forEach(c => {
+      const li = document.createElement('li'); li.textContent = c[0];
+      if (c[1].includes('pk')) { li.className = 'pk'; const g = document.createElement('span'); g.className = 'tag'; g.textContent = c[1] === 'pkfk' ? 'PK+FK' : 'PK'; li.append(g); }
+      else if (c[1] === 'fk') { li.className = 'fk'; const g = document.createElement('span'); g.className = 'tag'; g.textContent = 'FK'; li.append(g); }
+      else if (c[1] === 'null') li.className = 'nullable';
+      ul.append(li);
+    });
+    d.append(h, ul); grid.append(d);
+  });
+  const fks = [
+    ['OFFICE', 'OFFICETYPE', 'O.OFFICETYPECODE = OT.OFFICETYPECODE'],
+    ['DESKHOLDER', 'REFERRALSOURCE', 'DH.REFERRALSOURCECODE = RS.REFERRALSOURCECODE'],
+    ['LEASE', 'OFFICE', 'L.OFFICENUMBER = O.OFFICENUMBER'],
+    ['LEASE', 'DESKHOLDER', 'L.DESKHOLDERID = DH.DESKHOLDERID'],
+    ['LEASE', 'LEASETYPE', 'L.LEASETYPENUMBER = LT.LEASETYPENUMBER'],
+    ['INVOICE', 'LEASE', 'INV.LEASENUMBER = L.LEASENUMBER'],
+    ['INVOICEITEM', 'INVOICE', 'II.INVOICENUMBER = INV.INVOICENUMBER'],
+    ['INVOICEITEM', 'OFFICEADDON', 'II.ADDONNUMBER = OAO.ADDONNUMBER']
+  ];
+  const fkBody = $('#fk-table tbody');
+  fks.forEach(f => {
+    const tr = document.createElement('tr');
+    f.forEach((v, i) => { const td = document.createElement('td'); if (i === 2) { const c = document.createElement('code'); c.textContent = v; td.append(c); } else td.textContent = v; tr.append(td); });
+    fkBody.append(tr);
+  });
+
+  /* ---------- errors ---------- */
+  const errors = [
+    ['column "x" must appear in the GROUP BY clause or be used in an aggregate function', 'A plain column sits next to an aggregate', 'Add the column to GROUP BY (all of them)'],
+    ['aggregate functions are not allowed in WHERE', 'Aggregate condition in WHERE', 'Move it to HAVING, after GROUP BY'],
+    ['column reference "x" is ambiguous', 'Column exists in two joined tables', 'Prefix with the alias, e.g. S.StudentID'],
+    ['column "x" does not exist', 'Typo, or the column is in a different table, or a view column name does not match the alias', 'Compare with the CREATE TABLE script. Quoted aliases must match exactly, quotes and case.'],
+    ['subquery in FROM must have an alias', 'Derived table has no name', 'Add a name after the closing bracket: (SELECT …) Counts'],
+    ['more than one row returned by a subquery used as an expression', 'Subquery returns several rows but you used =', 'Use IN, or make the subquery return one value'],
+    ['relation "x" does not exist', 'Table or view not created yet, wrong order, or misspelled', 'Create it first. If the CREATE VIEW failed earlier, fix that error.'],
+    ['relation "x" already exists', 'Re-running a script that creates a view or table', 'DROP VIEW IF EXISTS above it, or CREATE OR REPLACE VIEW'],
+    ['each UNION query must have the same number of columns', 'The SELECT lists have different lengths', 'Match the column counts'],
+    ['UNION types date and character varying cannot be matched', 'Different datatypes in the same position', 'Pick compatible columns or Cast / To_Char one of them'],
+    ['cannot insert into view "x" (also update, delete)', 'The view joins 2+ tables, or uses GROUP BY, DISTINCT, aggregates or UNION', 'Change the underlying tables instead'],
+    ['A syntax error at or near …', 'Clauses out of order, missing comma, or missing semicolon between statements', 'Check order: SELECT, FROM, JOIN, WHERE, GROUP BY, HAVING, ORDER BY'],
+    ['WHERE after GROUP BY, or HAVING before GROUP BY (syntax error)', 'Clause out of order', 'Reorder: SELECT, FROM, JOIN, WHERE, GROUP BY, HAVING, ORDER BY'],
+    ['Right number of rows missing after a LEFT/RIGHT join', 'Outer join on the wrong side: the child table is the one being kept', 'Parent listed first: LEFT OUTER. Child listed first: RIGHT OUTER. Or swap the table order.'],
+    ['Count shows 1 where it should show 0', 'COUNT(*) after a LEFT OUTER JOIN counts the NULL row', 'COUNT(child.pk)'],
+    ['A parent with no children is missing', 'INNER JOIN drops it', 'LEFT OUTER JOIN from the parent'],
+    ['NOT IN returns no rows at all', 'The subquery list contains a NULL', 'Add WHERE col IS NOT NULL inside the subquery, or use LEFT JOIN … IS NULL'],
+    ['LIKE returns nothing', 'LIKE is case sensitive, or you used = with a % in it', 'Match the case (or Lower() both sides), and use LIKE not =']
+  ];
+  const errBody = $('#err-table tbody');
+  errors.forEach(e => {
+    const tr = document.createElement('tr');
+    tr.dataset.search = e.join(' ').toLowerCase();
+    e.forEach((v, i) => { const td = document.createElement('td'); if (i === 0) { const c = document.createElement('code'); c.textContent = v; td.append(c); } else td.textContent = v; tr.append(td); });
+    errBody.append(tr);
+  });
+  $('#err-q').addEventListener('input', e => {
+    const terms = e.target.value.toLowerCase().split(/\s+/).filter(Boolean);
+    errBody.querySelectorAll('tr').forEach(tr => { tr.hidden = !terms.every(t => tr.dataset.search.includes(t)); });
+  });
+
+  /* ---------- quiz ---------- */
+  const questions = [
+    { q: 'Which join returns every row from both tables, whether or not they match?', o: ['INNER JOIN', 'LEFT OUTER JOIN', 'RIGHT OUTER JOIN', 'FULL OUTER JOIN'], a: 3,
+      why: 'INNER keeps matches only. LEFT and RIGHT keep all rows from one side. FULL keeps both sides.' },
+    { q: 'FROM Staff … Position, and you want every position, even ones with no staff. Staff is the child. Which join?', o: ['INNER JOIN', 'LEFT OUTER JOIN', 'RIGHT OUTER JOIN', 'No join, use WHERE'], a: 2,
+      why: 'The parent (Position) is listed second, so it is the right table. RIGHT OUTER keeps all of it. Swapping the order and using LEFT works too.' },
+    { q: 'Which clause filters individual rows before grouping happens?', o: ['HAVING', 'WHERE', 'ORDER BY', 'GROUP BY'], a: 1,
+      why: 'WHERE runs before grouping. HAVING runs after, on aggregate results.' },
+    { q: 'Which clause order is valid?', o: ['SELECT, FROM, WHERE, HAVING, GROUP BY, ORDER BY', 'SELECT, FROM, JOIN, WHERE, GROUP BY, HAVING, ORDER BY', 'SELECT, FROM, WHERE, ORDER BY, GROUP BY', 'FROM, SELECT, WHERE, GROUP BY'], a: 1,
+      why: 'HAVING comes after GROUP BY, and ORDER BY is last.' },
+    { q: '"Show each course with an average mark above 80." Where does the condition go?', o: ['WHERE AVG(Mark) > 80', 'HAVING AVG(Mark) > 80, after GROUP BY CourseID', 'ORDER BY AVG(Mark) > 80', 'In the SELECT list'], a: 1,
+      why: 'The average only exists after grouping, so the filter is a HAVING. Aggregates in WHERE are an error.' },
+    { q: 'OfficeType LEFT OUTER JOIN Office, grouped by type. A type has no offices. What does COUNT(*) show for it?', o: ['0', '1', 'NULL', 'The row is missing'], a: 1,
+      why: 'The outer join creates one row of NULLs and COUNT(*) counts it. COUNT(O.OfficeNumber) ignores the NULL and gives 0.' },
+    { q: 'You want add-ons that have never been sold, and the question says you must use a subquery. Which?', o: ['LEFT OUTER JOIN … WHERE II.AddOnNumber IS NULL', 'WHERE AddOnNumber NOT IN (SELECT AddOnNumber FROM InvoiceItem)', 'INNER JOIN … WHERE II.AddOnNumber = NULL', 'HAVING COUNT(*) = 0'], a: 1,
+      why: 'NOT IN with a subquery. The LEFT JOIN … IS NULL version is correct too, but it is not a subquery. = NULL never matches anything.' },
+    { q: 'WHERE StudentID NOT IN (SELECT StudentID FROM t) returns zero rows even though some students are missing from t. Likely cause?', o: ['The subquery list contains a NULL', 'NOT IN is case sensitive', 'The subquery needs DISTINCT', 'StudentID must be in GROUP BY'], a: 0,
+      why: 'A NULL in the list makes NOT IN unknown for every row. Filter out NULLs inside the subquery.' },
+    { q: 'WHERE StudentID = (SELECT StudentID FROM Payment) fails with "more than one row returned by a subquery used as an expression". Fix?', o: ['Add DISTINCT', 'Use IN instead of =', 'Use HAVING', 'Add LIMIT to the outer query'], a: 1,
+      why: '= needs exactly one value on each side. IN accepts a list.' },
+    { q: 'There are 16 students and 10 staff. SELECT FirstName, LastName FROM Student UNION SELECT FirstName, LastName FROM Staff returns 25 rows. Why?', o: ['One row was lost to an error', 'UNION removes duplicates, so one name that appears in both counts once', 'Staff are filtered by default', 'UNION needs ORDER BY'], a: 1,
+      why: 'UNION ALL would return all 26.' },
+    { q: 'Which UNION is valid?', o: ['SELECT FirstName, LastName, City FROM Student UNION SELECT FirstName, LastName FROM Staff;', 'SELECT FirstName, Birthdate FROM Student UNION SELECT FirstName, LastName FROM Staff;', 'SELECT FirstName FROM Student UNION SELECT FirstName FROM Staff ORDER BY FirstName;', 'SELECT FirstName FROM Student ORDER BY FirstName UNION SELECT FirstName FROM Staff;'], a: 2,
+      why: 'Same column count, compatible types, and ORDER BY at the very end.' },
+    { q: 'In a UNION, which query supplies the column names?', o: ['The last query', 'The first query', 'Whichever has aliases', 'They must be identical'], a: 1, why: 'Column names come from the first query.' },
+    { q: 'A view joins Student, Registration and Course. What happens on INSERT INTO that_view …?', o: ['It works and inserts into the first table', 'It fails: cannot insert into view', 'It works only with DISTINCT', 'It inserts into all three tables'], a: 1,
+      why: 'Views over more than one table are not automatically updatable. A single-table view without GROUP BY, DISTINCT, aggregates or UNION can be modified.' },
+    { q: 'Student INNER JOIN Payment returns 33 rows. Student LEFT OUTER JOIN Payment returns 42. What does that tell you?', o: ['9 students have never made a payment', '9 payments have no student', 'There are 9 duplicate students', 'The join condition is wrong'], a: 0,
+      why: 'The outer join adds one row (with NULL PaymentDate) for each student with no payments, assuming one row per payment.' },
+    { q: 'SELECT … FROM Staff, Position with no ON returns 70 rows. Why?', o: ['70 staff have positions', 'Every staff row is matched with every position: 10 × 7', 'Position is duplicated', 'It is an inner join'], a: 1,
+      why: 'With no join condition the server returns the Cartesian product.' },
+    { q: 'Which is the main drawback of ORDER BY COUNT(*) DESC LIMIT 1 to find "the one with the most"?', o: ['It cannot sort by an aggregate', 'Ties for first place are lost', 'It needs a subquery', 'It only works with MAX'], a: 1,
+      why: 'Only one row comes back. A HAVING … >= ALL (…) or = (SELECT MAX …) keeps tied winners.' },
+    { q: 'WHERE Mark > ALL (SELECT Mark FROM …) returns a row when…', o: ['Mark is greater than at least one value', 'Mark is greater than every value returned', 'Mark equals any value', 'The subquery is empty'], a: 1,
+      why: '> ANY needs at least one smaller value; > ALL needs every value to be smaller.' },
+    { q: 'WHERE FirstName LIKE \'d%\' in PostgreSQL. Which name does it match?', o: ['Dan', 'dan', 'Both', 'Neither'], a: 1, why: 'LIKE is case sensitive in PostgreSQL. Use Lower(FirstName) LIKE \'d%\' to match both.' },
+    { q: 'Substring(\'SDEV1201\', 5, 4) returns…', o: ['\'1201\'', '\'V120\'', '\'EV12\'', '\'1201\' only if indexing starts at 0'], a: 0,
+      why: 'Positions start at 1: S=1 D=2 E=3 V=4, so position 5 is the first digit.' },
+    { q: 'A query joins two tables and selects Office.MonthlyRent, a column that exists in only one of them. Course rule?', o: ['Prefix is optional because it is not ambiguous', 'Prefix every column with its alias when 2+ tables, even if it is not ambiguous', 'Only prefix in the WHERE', 'Use * instead'], a: 1,
+      why: 'Your Day 13 notes make this mandatory for any query with more than one table.' }
+  ];
+  const root = $('#quiz-root'), scoreEl = $('#quiz-score');
+  let answered = 0, correct = 0;
+  function updateScore() {
+    scoreEl.textContent = answered === questions.length
+      ? 'Final score: ' + correct + ' of ' + questions.length
+      : answered + ' of ' + questions.length + ' answered' + (answered ? ' · ' + correct + ' correct' : '');
+  }
+  function renderQuiz() {
+    root.textContent = ''; answered = 0; correct = 0; updateScore();
+    questions.forEach((item, qi) => {
+      const box = document.createElement('div'); box.className = 'q';
+      const p = document.createElement('p'); p.textContent = (qi + 1) + '. ' + item.q; box.append(p);
+      const opts = document.createElement('div'); opts.className = 'q-opts';
+      item.o.forEach((text, oi) => {
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = text;
+        b.addEventListener('click', () => {
+          opts.querySelectorAll('button').forEach(x => x.disabled = true);
+          const right = oi === item.a;
+          b.classList.add(right ? 'right' : 'wrong');
+          if (!right) opts.children[item.a].classList.add('right');
+          const why = document.createElement('p'); why.className = 'why';
+          why.textContent = (right ? 'Correct. ' : 'Not quite. ') + item.why;
+          box.append(why); answered++; if (right) correct++; updateScore();
+        });
+        opts.append(b);
+      });
+      box.append(opts); root.append(box);
+    });
+  }
+  $('#quiz-reset').addEventListener('click', renderQuiz);
+  renderQuiz();
+
+  /* ---------- Quiz 2 drills ---------- */
+  function mountDrill(rootEl, scoreEl, items, options) {
+    let answered = 0, correct = 0;
+    const upd = () => {
+      scoreEl.textContent = answered === items.length
+        ? 'Final score: ' + correct + ' of ' + items.length
+        : answered + ' of ' + items.length + ' answered' + (answered ? ' · ' + correct + ' correct' : '');
+    };
+    rootEl.textContent = ''; upd();
+    items.forEach((item, qi) => {
+      const box = document.createElement('div'); box.className = 'q';
+      const p = document.createElement('p'); p.textContent = (qi + 1) + '. ' + item.q; box.append(p);
+      if (item.code) {
+        const pre = document.createElement('pre'); const code = document.createElement('code'); code.className = 'sql'; code.textContent = item.code; pre.append(code); box.append(pre);
+      }
+      const opts = document.createElement('div'); opts.className = 'q-opts';
+      const labels = item.o || options;
+      labels.forEach((text, oi) => {
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = text;
+        b.addEventListener('click', () => {
+          opts.querySelectorAll('button').forEach(x => x.disabled = true);
+          const right = oi === item.a;
+          b.classList.add(right ? 'right' : 'wrong');
+          if (!right) opts.children[item.a].classList.add('right');
+          const why = document.createElement('p'); why.className = 'why';
+          why.textContent = (right ? 'Correct. ' : 'Not quite. ') + item.why;
+          box.append(why);
+          if (item.fix) {
+            const pre = document.createElement('pre'); const code = document.createElement('code'); code.className = 'sql'; code.textContent = '-- fixed\n' + item.fix; pre.append(code); box.append(pre);
+            refreshCode(pre);
+          }
+          answered++; if (right) correct++; upd();
+        });
+        opts.append(b);
+      });
+      box.prepend(p); box.append(opts); rootEl.append(box);
+    });
+    refreshCode(rootEl);
+  }
+  const JOINS = ['INNER JOIN', 'LEFT OUTER JOIN', 'RIGHT OUTER JOIN', 'FULL OUTER JOIN'];
+  const scenarios = [
+    { q: 'I want only the records that match in both tables.', a: 0, why: 'Matches in both tables is the definition of an inner join.' },
+    { q: 'The parent table is listed first and I want all parents, even ones with no children.', a: 1, why: 'Parent is the left table, so LEFT OUTER JOIN keeps all of it.' },
+    { q: 'The child table is listed first and I want all parents, even ones with no children.', a: 2, why: 'The parent is now the right table, so RIGHT OUTER JOIN keeps all of it.' },
+    { q: 'I want every row from both tables, matched or not.', a: 3, why: 'Only FULL OUTER JOIN keeps unmatched rows from both sides.' },
+    { q: 'List every student and their payment dates. Students who never paid must still appear. FROM Student … Payment.', a: 1, why: 'Student is the parent and is listed first, so LEFT OUTER JOIN. Those students show NULL for PaymentDate.' },
+    { q: 'Show only the positions that actually have staff in them.', a: 0, why: '"Only those that have" means matches only, so INNER JOIN. Positions with no staff drop out.' },
+    { q: 'FROM Staff … Position. Show every position, including Assistant Dean, who has no staff.', a: 2, why: 'Position (parent) is listed second, so it is the right table. RIGHT OUTER JOIN.' }
+  ];
+  const spotOpts = ['Aggregate in WHERE', 'Missing GROUP BY column', 'Ambiguous column', 'Wrong join type', 'Clause out of order'];
+  const spots = [
+    { q: 'What is wrong with this query?', a: 0, code: "SELECT CourseID, AVG(Mark) AS \"Average Mark\"\nFROM Registration\nWHERE AVG(Mark) > 80\nGROUP BY CourseID;",
+      why: 'AVG(Mark) only exists after grouping, so the condition belongs in HAVING.',
+      fix: "SELECT CourseID, AVG(Mark) AS \"Average Mark\"\nFROM Registration\nGROUP BY CourseID\nHAVING AVG(Mark) > 80;" },
+    { q: 'What is wrong with this query?', a: 1, code: "SELECT FirstName, LastName, COUNT(StudentID) AS \"Total\"\nFROM Student\nGROUP BY FirstName;",
+      why: 'LastName is a plain column in SELECT but is not in GROUP BY.',
+      fix: "SELECT FirstName, LastName, COUNT(StudentID) AS \"Total\"\nFROM Student\nGROUP BY FirstName, LastName;" },
+    { q: 'What is wrong with this query?', a: 2, code: "SELECT StudentID, Student.FirstName, Payment.PaymentDate\nFROM Student\nINNER JOIN Payment ON Student.StudentID = Payment.StudentID;",
+      why: 'StudentID exists in both tables, so the server does not know which one you mean (and the course wants every column prefixed anyway).',
+      fix: "SELECT Student.StudentID, Student.FirstName, Payment.PaymentDate\nFROM Student\nINNER JOIN Payment ON Student.StudentID = Payment.StudentID;" },
+    { q: 'The question asks for every student, including those who never paid. What is wrong?', a: 3, code: "SELECT Student.FirstName, Student.LastName, Payment.PaymentDate\nFROM Student\nINNER JOIN Payment ON Student.StudentID = Payment.StudentID;",
+      why: 'INNER JOIN drops students with no payments. Student is the parent and listed first, so use LEFT OUTER JOIN.',
+      fix: "SELECT Student.FirstName, Student.LastName, Payment.PaymentDate\nFROM Student\nLEFT OUTER JOIN Payment ON Student.StudentID = Payment.StudentID;" },
+    { q: 'What is wrong with this query?', a: 4, code: "SELECT CourseID, AVG(Mark) AS \"Average Mark\"\nFROM Registration\nGROUP BY CourseID\nWHERE CourseID LIKE 'DMIT%';",
+      why: 'WHERE must come before GROUP BY.',
+      fix: "SELECT CourseID, AVG(Mark) AS \"Average Mark\"\nFROM Registration\nWHERE CourseID LIKE 'DMIT%'\nGROUP BY CourseID;" },
+    { q: 'What is wrong with this query?', a: 0, code: "SELECT EmployeeTypeID, COUNT(*) AS \"Number of Employees\"\nFROM Employee\nWHERE COUNT(*) > 2\nGROUP BY EmployeeTypeID;",
+      why: 'A count is an aggregate. Conditions on it go in HAVING.',
+      fix: "SELECT EmployeeTypeID, COUNT(*) AS \"Number of Employees\"\nFROM Employee\nGROUP BY EmployeeTypeID\nHAVING COUNT(*) > 2;" },
+    { q: 'The question asks for every position, even ones with no staff. What is wrong?', a: 3, code: "SELECT Position.PositionDescription, Staff.FirstName\nFROM Staff\nLEFT OUTER JOIN Position ON Staff.PositionID = Position.PositionID;",
+      why: 'Staff is the child and is listed first, so LEFT OUTER keeps all staff, which already all match. The parent is on the right: use RIGHT OUTER JOIN (or swap the table order).',
+      fix: "SELECT Position.PositionDescription, Staff.FirstName\nFROM Staff\nRIGHT OUTER JOIN Position ON Staff.PositionID = Position.PositionID;" },
+    { q: 'What is wrong with this query?', a: 4, code: "SELECT City, COUNT(StudentID) AS \"Total\"\nFROM Student\nHAVING COUNT(StudentID) > 2\nGROUP BY City;",
+      why: 'HAVING comes after GROUP BY, never before.',
+      fix: "SELECT City, COUNT(StudentID) AS \"Total\"\nFROM Student\nGROUP BY City\nHAVING COUNT(StudentID) > 2;" },
+    { q: 'What is wrong with this query?', a: 1, code: "SELECT CourseID, AVG(Mark) AS \"Average Mark\"\nFROM Registration;",
+      why: 'CourseID is a plain column next to an aggregate, so it must be grouped.',
+      fix: "SELECT CourseID, AVG(Mark) AS \"Average Mark\"\nFROM Registration\nGROUP BY CourseID;" }
+  ];
+  function mountQuiz2() {
+    mountDrill($('#scen-root'), $('#scen-score'), scenarios, JOINS);
+    mountDrill($('#spot-root'), $('#spot-score'), spots, spotOpts);
+  }
+  $('#q2-reset').addEventListener('click', mountQuiz2);
+  mountQuiz2();
+
+  /* ---------- initial renders ---------- */
+  renderJoin(); renderUnion(); renderSteps();
+  refreshCode(document);
+})();
+</script>
+
+</body></html>
